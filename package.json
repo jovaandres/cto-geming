@@ -1,0 +1,44 @@
+{
+  "name": "cto-project",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www",
+    "client:build": "cd client && npm install && npm run build",
+    "dev-server": "SET NODE_ENV=development & nodemon --inspect ./bin/www",
+    "client": "concurrently --kill-others-on-fail \"cd client && npm run serve\"",
+    "dev-start": "concurrently --kill-others-on-fail \"npm run dev-server\" \"npm run client\""
+  },
+  "dependencies": {
+    "autoprefixer": "^10.3.6",
+    "concurrently": "^6.3.0",
+    "connect-history-api-fallback": "^1.6.0",
+    "cookie-parser": "~1.4.5",
+    "cors": "^2.8.5",
+    "debug": "~4.3.2",
+    "dotenv": "^10.0.0",
+    "express": "~4.17.1",
+    "express-enforces-ssl": "^1.1.0",
+    "express-jwt": "^6.1.0",
+    "express-session": "^1.17.2",
+    "helmet": "^4.6.0",
+    "http-errors": "~1.8.0",
+    "jade": "~1.11.0",
+    "jsonwebtoken": "^8.5.1",
+    "module-alias": "^2.2.2",
+    "mongoose": "^6.0.8",
+    "mongoose-unique-validator": "^2.0.4",
+    "morgan": "~1.10.0",
+    "node-sass": "^6.0.1",
+    "passport": "^0.5.0",
+    "passport-auth0": "^1.4.0",
+    "passport-local": "^1.0.0",
+    "serve-static": "^1.14.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.13"
+  },
+  "_moduleAliases": {
+    "@": "."
+  }
+}
