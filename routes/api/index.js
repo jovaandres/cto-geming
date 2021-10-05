@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 router.use('/users', require('./users'));
+router.use('/quiz', require('./quiz'));
 
 router.use(function(err, req, res, next) {
 
