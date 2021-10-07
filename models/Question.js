@@ -6,12 +6,11 @@ const QuestionSchema = new mongoose.Schema(
   {
     gistUrl: {
       type: String,
-      match: [/https:\/\/api\.github\.com\/$/, "is invalid"],
+      match: [/https:\/\/gist\.github\.com\//, "is invalid"],
       required: true
     },
     filename: {
       type: String,
-      match: [/\S+\.\S/, "is invalid"],
       required: true
     },
     language: {
@@ -20,7 +19,7 @@ const QuestionSchema = new mongoose.Schema(
     },
     score: {
       type: Number,
-      default: Math.floor(Math.random() * (25 - 5 + 1)) + 5
+      required: true
     }
   }
 );

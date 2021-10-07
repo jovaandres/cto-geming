@@ -5,6 +5,7 @@ const grader = require('../../services/grader');
 const middlewares = require('../../middlewares');
 
 router.get('/', ...service.getQuiz);
+router.post('/', ...service.postQuiz);
 
 router.get('/', middlewares.requireAuthUser, function(req, res) {
   return res.json({
