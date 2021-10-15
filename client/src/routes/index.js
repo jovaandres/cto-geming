@@ -2,9 +2,15 @@ import VueRouter from "vue-router";
 import AuthPage from "@/pages/AuthPage";
 import HomePage from "@/pages/HomePage";
 import SignInPage from "@/pages/SignInPage";
+import QuizPage from "@/pages/QuizPage";
 import store from "@/vuex";
 
 const routes = [
+  {
+    name: "quiz",
+    path: "/quiz",
+    component: QuizPage
+  },
   {
     name: "home",
     path: "",

@@ -20,3 +20,7 @@ node_modules/
 *.njsproj
 *.sln
 *.sw?
+/_cacache
+/_locks
+/anonymous-cli-metrics.json
+/package-lock.json
