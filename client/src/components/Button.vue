@@ -15,12 +15,13 @@ export default {
 
 <style scoped>
 .ans-btn {
-  border: 1px solid black;
+  border: 1px solid #00ADB5;
   padding: 15px;
-  width: 7em;
+  width: 6.5em;
   border-radius: 10px;
+  transition: .2s ease-in;
 }
 .ans-btn:hover {
-  background-color: #c4c4c4;
+  background-color: #00ADB535;
 }
 </style>
