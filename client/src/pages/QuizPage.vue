@@ -3,12 +3,12 @@
     <div class="quiz-container">
       <h1 class="point">1000</h1>
       <div class="container">
-        <div class="code-block"></div>
+        <div class="choice-block"></div>
         <div class="ans-container">
-          <Button code="Python"/>
-          <Button code="C++"/>
-          <Button code="Golang"/>
-          <Button code="Elixir"/>
+          <Button choice="Python"/>
+          <Button choice="C++"/>
+          <Button choice="Golang"/>
+          <Button choice="Elixir"/>
         </div>
         <div class='next-container'>
           <button type="submit" class="next-btn">
@@ -62,17 +62,17 @@ export default {
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
   border-radius: 50px;
-  box-shadow: 8px 5px 40px #00ADB550; 
+  box-shadow: 5px 5px 40px #00ADB550; 
   position: relative;
 } 
 .point {
-  font-size: 2.2em;
+  font-size: 2.3em;
   text-align: center;
 }
 .container {
-  padding-inline: 5em;
+  padding: 8px 5em;
 }
-.code-block {
+.choice-block {
   background-color: #C4C4C4;
   height: 21em;
 }
@@ -93,6 +93,10 @@ export default {
   width: 8em;
   border-radius: 10px;
   font-size: 20px;
+  transition: 0.1s ease-in;
+}
+.next-btn:hover {
+  background-color: #00ADB540;
 }
 .next-btn i {
   padding: 5px;

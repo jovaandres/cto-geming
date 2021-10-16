@@ -1,6 +1,6 @@
 <template>
   <button type="submit" class='ans-btn'>
-    {{code}}
+    {{choice}}
   </button>
 </template>
 
@@ -8,7 +8,7 @@
 export default {
   name: "Button",
   props: {
-    code: String
+    choice: String
   }
 }
 </script>
@@ -19,7 +19,7 @@ export default {
   padding: 15px;
   width: 6.5em;
   border-radius: 10px;
-  transition: .2s ease-in;
+  transition: .15s ease-in;
 }
 .ans-btn:hover {
   background-color: #00ADB535;
