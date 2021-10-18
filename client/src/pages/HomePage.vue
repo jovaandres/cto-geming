@@ -1,6 +1,7 @@
 <template>
   <div class="home-page">
     <div class="left">
+      <particle2 />
       <h1 class="title">
         <span>P</span>
         <span>R</span>
@@ -51,9 +52,12 @@
 </template>
 <script>
 // import SvgExample from "@/assets/svgs/svg-example.svg";
-
+import particle2 from "@/components/particle2";
 export default {
   name: "HomePage",
+  components: {
+    particle2
+  }
 };
 </script>
 <style scoped>
@@ -73,6 +77,9 @@ export default {
     padding-inline: 5em;
     flex-direction: column;
     /* border: 1px solid white; */
+  }
+  .title {
+    z-index: 2;
   }
   .right {
     background-color: #00ADB5;
@@ -94,6 +101,7 @@ export default {
   .btn-container {
     display: flex;
     gap: 20px;
+    z-index: 2;
   }
   .btn-link {
     outline: none;
