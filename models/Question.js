@@ -4,9 +4,8 @@ const random = require('mongoose-simple-random');
 
 const QuestionSchema = new mongoose.Schema(
   {
-    gistUrl: {
+    gistId: {
       type: String,
-      match: [/https:\/\/gist\.github\.com\//, "is invalid"],
       required: true
     },
     filename: {
@@ -16,6 +15,10 @@ const QuestionSchema = new mongoose.Schema(
     language: {
       type: String,
       required: true
+    },
+    choice: {
+      type: Array,
+      required: true,
     },
     score: {
       type: Number,

@@ -1,40 +1,21 @@
 const Score = require('../models/Score');
 const Question = require('../models/Question');
-const randomLang = require('../utils/randomLang');
+const { randomLang } = require('../utils/randomLang');
 
 module.exports = {
   grade: [
     async function (req, res, next) {
       const answers = req.body.data;
-      /*
-      data = [
-      {
-        gistUrl: "value",
-        filename: "value",
-        language: "value"
-      },
-      {
-        gistUrl: "value",
-        filename: "value",
-        language: "value"
-      },
-      {
-        gistUrl: "value",
-        filename: "value",
-        language: "value"
-      },
-      ]
-      * */
-      const userId = req.body.user;
+      const userId = req.body.userId;
       const timeTakenInSec = req.body.timeTaken
       let point = 0;
 
       for (const answer of answers) {
-        await Question.findOne({gistUrl: answer.gistUrl, filename: answer.filename})
+        await Question.findOne({gistId: answer.gistId, filename: answer.filename})
           .exec()
           .then(value => {
             if ((value.language === answer.language) && !randomLang.includes(answer.language)) {
-              point += answer.score;
+              point += value.score;
             }
           }).catch(err => {
             return res.json({
@@ -62,7 +43,9 @@ module.exports = {
           data: value,
           message: msg
         })
-      }).catch(next);
+      }).catch(err => {
+        console.log(err.message);
+      });
     }
   ]
 }

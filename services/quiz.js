@@ -1,13 +1,13 @@
 const Question = require('../models/Question');
 const axios = require('axios');
-const randomLang = require('../utils/randomLang');
+const {randomLang, programmingLanguage} = require('../utils/randomLang');
 
 module.exports = {
   getQuiz: [
     function (req, res, next) {
 
       const questionLimit = req.query.limit || 15;
-      let field = {"gistUrl": 1, "filename": 1, "score": 1}
+      let field = {"gistId": 1, "filename": 1, "score": 1, "choice": 1}
 
       Question.findRandom({}, field, {limit: questionLimit}, function (err, results) {
         if (err) {
@@ -30,13 +30,20 @@ module.exports = {
         .catch(err => console.log(err.message));
       let insertData = [];
 
-      axios.get("https://api.github.com/gists/public?per_page=200")
+      axios.get("https://api.github.com/gists/public?per_page=100")
         .then(datas => {
           datas.data.forEach(data => {
+            let language = Object.values(data.files)[0].language || randomLang[Math.floor(Math.random() * (12))];
             let newData = {
-              gistUrl: data.html_url + ".js",
+              gistId: data.id,
               filename: Object.keys(data.files)[0],
-              language: Object.values(data.files)[0].language || randomLang[Math.floor(Math.random() * (12))],
+              language: language,
+              choice: [
+                language,
+                programmingLanguage[Math.floor(Math.random() * (22))],
+                programmingLanguage[Math.floor(Math.random() * (22))],
+                programmingLanguage[Math.floor(Math.random() * (22))]
+              ],
               score: Math.floor(Math.random() * (25 - 5 + 1)) + 5
             }
             insertData.push(newData);

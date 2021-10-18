@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://github.githubassets.com/assets/gist-embed-4ac6018bcc05457cde2f66d2e7299d11.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&display=swap" rel="stylesheet">
@@ -14,6 +15,9 @@
         padding: 0;
         margin: 0;
       }
+      .gist-meta {
+        display: none!important;
+      }
     </style>
     <title><%= htmlWebpackPlugin.options.title %></title>
   </head>
@@ -22,6 +26,10 @@
       <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
     <div id="app"></div>
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/gist-embed@1.0.4/dist/gist-embed.min.js"
+    ></script>
     <!-- built files will be auto injected -->
   </body>
 </html>
