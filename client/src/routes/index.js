@@ -3,9 +3,15 @@ import AuthPage from "@/pages/AuthPage";
 import HomePage from "@/pages/HomePage";
 import SignInPage from "@/pages/SignInPage";
 import QuizPage from "@/pages/QuizPage";
+import LeaderboardPage from "@/pages/LeaderboardPage"
 import store from "@/vuex";
 
 const routes = [
+  {
+    name: "leaderboard",
+    path: "/leaderboard",
+    component: LeaderboardPage
+  },
   {
     name: "quiz",
     path: "/quiz",

@@ -21,14 +21,29 @@
           <button
             type="submit"
             class="next-btn"
+            v-show="!submitted"
             @click="next(quizData[current].gistId, quizData[current].filename)"
           >
-            Next
+            {{ current !== 1 ? "Next" : "Submit" }}
             <i class="fas fa-arrow-right"></i>
           </button>
         </div>
       </div>
     </div>
+    <transition name="fade" appear>
+      <div class="modal-overlay" v-if="showModal" @click="showModal = false"></div>
+    </transition>
+    <transition name="pop" appear>
+      <div class="modal" role="dialog" v-if="showModal">
+        <h3>Your Score</h3>
+        <h1>{{ score }}</h1>
+        <p>{{ message }}</p>
+        <div class="action">
+          <button @click="toHome" class="button">Home</button>
+          <button @click="toLeaderboard" class="button">Leaderboard</button>
+        </div>
+      </div>
+    </transition>
     <ul class="circles">
       <li></li>
       <li></li>
@@ -59,7 +74,12 @@ export default {
   data() {
     return {
       current: 0,
-      answer: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+      answer: [0, 1],
+      showModal: false,
+      score: 0,
+      message: "",
+      submitted: false,
+      timeTaken: Date.now()
     };
   },
   computed: {
@@ -84,7 +104,7 @@ export default {
       });
     },
     next(gistId, filename) {
-      if (this.current !== 14) {
+      if (this.current !== 1) {
         this.answer[this.current] = {
           gistId: gistId,
           filename: filename,
@@ -97,17 +117,32 @@ export default {
           filename: filename,
           language: this.answer[this.current]
         };
+        this.timeTaken = Date.now() - this.timeTaken;
         this.$http
-          ._post("/quiz/grade", { data: this.answer, userId: this.userId.id, timeTaken: 180 })
+          ._post("/quiz/grade", {
+            data: this.answer,
+            userId: this.userId.id,
+            timeTaken: this.timeTaken / 1000
+          })
           .then(res => {
             console.log(res);
-            const redirectRouteName = this.$route.query.redirect || "home";
-            return this.$router.push({ name: redirectRouteName, query: this.$route.query });
+            this.score = res.score;
+            this.message = res.message;
+            this.submitted = true;
+            this.showModal = true;
           });
       }
     },
     updateAnswer(language) {
       this.answer[this.current] = language;
+    },
+    toHome() {
+      const redirectRouteName = this.$route.query.redirect || "home";
+      return this.$router.push({ name: redirectRouteName, query: this.$route.query });
+    },
+    toLeaderboard() {
+      const redirectRouteName = this.$route.query.redirect || "leaderboard";
+      return this.$router.push({ name: redirectRouteName, query: this.$route.query });
     }
   }
 };
@@ -279,5 +314,67 @@ export default {
     opacity: 0;
     border-radius: 50%;
   }
+}
+
+.modal {
+  position: absolute;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  text-align: center;
+  width: fit-content;
+  height: fit-content;
+  max-width: 22em;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);
+  background: #FFF;
+  z-index: 999;
+  transform: none;
+}
+.modal h1 {
+  margin: 0 0 1rem;
+  color: #2c3e50;
+  font-size: 4rem;
+}
+
+.modal h3 {
+  color: #2c3e50;
+}
+
+.modal p {
+  color: #2c3e50;
+}
+
+.modal-overlay {
+  content: '';
+  position: absolute;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 998;
+  background: #2c3e50;
+  opacity: 0.6;
+  cursor: pointer;
+}
+
+.action {
+  display: flex;
+  flex-direction: row;
+}
+
+.action button {
+  background-color: #00adb580;
+  padding: 10px;
+  width: 8em;
+  border-radius: 10px;
+  font-size: 20px;
+  margin: 1em 0.5em;
+  color: #FFF;
 }
 </style>

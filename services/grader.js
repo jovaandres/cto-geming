@@ -25,8 +25,8 @@ module.exports = {
           });
       }
 
-      if (timeTakenInSec > 180) {
-        point -= (timeTakenInSec - 180) / 10
+      if (timeTakenInSec > 100) {
+        point -= (timeTakenInSec - 100) / 10
       }
 
       const newScore = new Score({
@@ -35,12 +35,11 @@ module.exports = {
         timeTaken: timeTakenInSec
       });
 
-      let msg = (timeTakenInSec > 180) ? "Cupu gan" : "Gegegemink"
+      let msg = (timeTakenInSec > 100) ? "Cupu gan" : "Gegegemink"
 
       newScore.save().then(value => {
         return res.json({
-          error: false,
-          data: value,
+          score: value.score,
           message: msg
         })
       }).catch(err => {
