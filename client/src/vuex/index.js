@@ -13,13 +13,9 @@ export default new Vuex.Store({
     userAuth: {
       isAuth: false,
       user: null
-    },
-    quizData: []
+    }
   },
   mutations: {
-    setData(state, quizData) {
-      state.quizData = quizData;
-    },
     setUserAuth(state, userAuth) {
       state.userAuth = { ...userAuth, user: { ...userAuth.user, accessToken: undefined } };
     },
@@ -31,9 +27,6 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    setQuizData(context, quizData) {
-      context.commit("setData", quizData);
-    },
     updateUserAuth(context, authData) {
       context.commit("setUserAuth", authData);
     },

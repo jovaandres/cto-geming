@@ -22,7 +22,7 @@
           <td><b>Rank</b></td>
           <td><b>Name</b></td>
           <td><b>Score</b></td>
-          <td><b>Time Taken(s)</b></td>
+          <td><b>Time Taken (s)</b></td>
         </tr>
         <tr v-for="(item, index) in leaderboard" :key="item.id">
           <td>{{ index + 1 }}</td>
@@ -49,14 +49,19 @@ export default {
     };
   },
   mounted() {
-    this.$http
-      ._get("/leaderboard")
-      .then(res => {
-        this.leaderboard = res.data;
-      })
-      .catch(err => {
-        console.log(err.message);
-      });
+    this.fetchData();
+  },
+  methods: {
+    fetchData() {
+      this.$http
+        ._get("/leaderboard")
+        .then(res => {
+          this.leaderboard = res.data;
+        })
+        .catch(err => {
+          console.log(err.message);
+        });
+    }
   }
 };
 </script>

@@ -11,10 +11,11 @@
         </div>
         <div class="ans-container">
           <Button
-            v-for="choice in quizData[current].choice"
+            v-for="(choice, index) in quizData[current].choice"
             v-bind:choice="choice"
+            v-on:click.native="updateAnswer(choice, index)"
+            v-bind:class="{ selected: index === sIndex }"
             :key="choice"
-            v-on:click.native="updateAnswer(choice)"
           />
         </div>
         <div class="next-container">
@@ -63,7 +64,6 @@
 import Button from "../components/Button.vue";
 import VueEmbedGist from "vue-embed-gist";
 import store from "@/vuex";
-import { mapActions } from "vuex";
 
 export default {
   name: "QuizPage",
@@ -73,34 +73,29 @@ export default {
   },
   data() {
     return {
+      quizData: [],
       current: 0,
-      answer: [0, 1],
+      answer: Array(2),
       showModal: false,
       score: 0,
       message: "",
       submitted: false,
-      timeTaken: Date.now()
+      timeTaken: Date.now(),
+      sIndex: -1
     };
   },
   computed: {
-    quizData() {
-      return store.state.quizData;
-    },
     userId() {
       return store.state.userAuth.user;
     }
-  },
-  serverPrefetch() {
-    this.fetchData();
   },
   mounted() {
     this.fetchData();
   },
   methods: {
-    ...mapActions(["setQuizData"]),
     fetchData() {
       this.$http._get("/quiz").then(res => {
-        return this.setQuizData(res.data);
+        this.quizData = res.data;
       });
     },
     next(gistId, filename) {
@@ -111,6 +106,7 @@ export default {
           language: this.answer[this.current]
         };
         this.current++;
+        this.sIndex = -1;
       } else {
         this.answer[this.current] = {
           gistId: gistId,
@@ -125,7 +121,6 @@ export default {
             timeTaken: this.timeTaken / 1000
           })
           .then(res => {
-            console.log(res);
             this.score = res.score;
             this.message = res.message;
             this.submitted = true;
@@ -133,8 +128,9 @@ export default {
           });
       }
     },
-    updateAnswer(language) {
+    updateAnswer(language, index) {
       this.answer[this.current] = language;
+      this.sIndex = index;
     },
     toHome() {
       const redirectRouteName = this.$route.query.redirect || "home";
@@ -316,8 +312,11 @@ export default {
   }
 }
 
+.selected {
+  background-color: #00ADB5;
+}
+
 .modal {
-  position: absolute;
   position: fixed;
   top: 0;
   right: 0;
@@ -350,8 +349,6 @@ export default {
 }
 
 .modal-overlay {
-  content: '';
-  position: absolute;
   position: fixed;
   top: 0;
   right: 0;

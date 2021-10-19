@@ -34,16 +34,18 @@ module.exports = {
         .then(datas => {
           datas.data.forEach(data => {
             let language = Object.values(data.files)[0].language || randomLang[Math.floor(Math.random() * (12))];
+            let choice = [];
+
+            for (let i = 0; i < 4; i++) {
+              choice.push(programmingLanguage[Math.floor(Math.random() * (28))])
+            }
+            choice[Math.floor(Math.random() * (4))] = language;
+
             let newData = {
               gistId: data.id,
               filename: Object.keys(data.files)[0],
               language: language,
-              choice: [
-                language,
-                programmingLanguage[Math.floor(Math.random() * (22))],
-                programmingLanguage[Math.floor(Math.random() * (22))],
-                programmingLanguage[Math.floor(Math.random() * (22))]
-              ],
+              choice: choice,
               score: Math.floor(Math.random() * (25 - 5 + 1)) + 5
             }
             insertData.push(newData);

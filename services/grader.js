@@ -31,7 +31,7 @@ module.exports = {
 
       const newScore = new Score({
         player: userId,
-        score: point,
+        score: point.toFixed(2),
         timeTaken: timeTakenInSec
       });
 
