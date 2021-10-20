@@ -1,26 +1,30 @@
 <template>
   <div class="dashboard">
     <div class="dashboard-container">
-      <div class="profile">
-        <div class="profile-img">
-
+      <button class="sign-out">
+        <i class="fas fa-door-open"></i>
+        <span>Sign out</span>
+      </button>
+        <div class="inner-container">
+          <div class="profile">
+            <div class="profile-img"></div>
+          <div class="profile-content">
+            <h2 class="name">Username</h2>
+            <h2 class="rank">Rank #1</h2>
+          </div>
         </div>
-        <div class="profile-content">
-          <h2 class="name">Username</h2>
-          <h2 class="rank">Rank #1</h2>
-        </div>
-      </div>
-      <div class="quiz-content">
-        <router-link to="quiz">
-          <button class="quiz-btn">Quiz</button>
-        </router-link>
-        <router-link to="leaderboard">
-          <button class="leaderboard-btn">Leaderboard</button>
-        </router-link>
-        <div class="highscore-box">
-          <h2>Highscore</h2>
-          <div class="score">
-            <h1>1000</h1>
+        <div class="quiz-content">
+          <router-link to="quiz">
+            <button class="quiz-btn">Quiz</button>
+          </router-link>
+          <router-link to="leaderboard">
+            <button class="leaderboard-btn">Leaderboard</button>
+          </router-link>
+          <div class="highscore-box">
+            <h2>Highscore</h2>
+            <div class="score">
+              <h1>1000</h1>
+            </div>
           </div>
         </div>
       </div>
@@ -54,7 +58,10 @@ export default {
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
     border-radius: 50px;
-    position: relative;
+    height: 100%;
+  }
+
+  .inner-container {
     display: flex;
     height: 100%;
     align-items: center;
@@ -62,14 +69,35 @@ export default {
     gap: 15px;
   }
 
+  .sign-out {
+    border: 1px solid white;
+    position: absolute;
+    top: 5%;
+    background-color: #EEEEEE;
+    padding-inline: 15px;
+    height: 2.2em;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #222831;
+    transition: all 0.2s ease-in-out;
+    gap: 7px;
+  }
+
+  .sign-out i {
+    color: #222831;
+    font-size: 18px;
+  }
+
   .profile {
     width: 18em;
     display: flex;
     align-items: center;
-    border: 1px solid white;
     flex-direction: column;
-    height: 65%;
-    justify-content: space-around;
+    height: 70%;
+    justify-content: space-evenly;
+    background-color: #222831;
   }
 
   .profile-img {
@@ -89,32 +117,44 @@ export default {
   }
 
   .quiz-content {
-    border: 1px solid white;
     width: 25em;
     display: flex;
     align-items: center;
     flex-direction: column;
     gap: 15px;
-    height: 65%;
+    height: 70%;
   }
 
   .quiz-content button {
     background-color: #00adb585;
     width: 25em;
     height: 3em;
+    outline: none;
+    transition: 0.15s ease-in-out;
+  }
+
+  .quiz-content button:hover {
+    background-color: #00adb540;
   }
   
   .highscore-box {
-    border: 1px solid white;
     width: 100%;
     height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #222831;
+    padding: 15px;
   }
   .score {
-    border: 1px solid red;
     width: 100%;
     height: 100%;
     display: flex;
     justify-content: center;
+    align-items: center;
+  }
+
+  .score h1 {
+    font-size: 4.5em;
   }
 
 
