@@ -1,8 +1,16 @@
 <template>
   <div class="sign-in-page">
-    <particle-3 />
+    <particle3 />
+    <transition name="fade" appear>
+      <div class="modal-overlay" v-if="showModal" @click="showModal = false"></div>
+    </transition>
+    <transition name="pop" appear>
+      <div class="modal" role="dialog" v-if="showModal">
+        <h3>{{ name }}</h3>
+        <p>{{ message }}</p>
+      </div>
+    </transition>
     <div class="sign-in-container">
-      <!-- TODO: add to this component ability to toggle into merchant sign in -->
       <div class="sign-in-box">
         <div class="sign-in-form">
           <h1 class="sign-in-title">Sign in as a user</h1>
@@ -11,7 +19,7 @@
             class="text-field"
             name="email"
             placeholder="Email"
-            v-model="email"
+            v-model="userData.email"
           />
 
           <input
@@ -19,7 +27,7 @@
             class="text-field"
             name="password"
             placeholder="Password"
-            v-model="password"
+            v-model="userData.password"
           />
 
           <button
@@ -52,8 +60,13 @@ export default {
   props: ['userAuth'],
   data() {
     return {
-      email: "",
-      password: ""
+      userData: {
+        email: "",
+        password: ""
+      },
+      name: "",
+      message: "",
+      showModal: false
     };
   },
   watch: {
@@ -71,7 +84,7 @@ export default {
     ...mapActions(["updateUserAuth"]),
     onSubmit() {
       this.$http
-        ._post("/users/login", { email: this.email, password: this.password })
+        ._post("/users/login", this.userData)
         .then(body => {
           return this.updateUserAuth({
             isAuth: true,
@@ -80,8 +93,9 @@ export default {
         })
         .catch(err => {
           if (err.response) {
-            console.log("Error when attempting to login user", err, err.response);
-            return alert(JSON.stringify(err.response.data));
+            this.name = err.response.data.name;
+            this.message = err.response.data.errors || err.response.data.message;
+            this.showModal = true;
           }
         });
     }
@@ -138,9 +152,9 @@ export default {
     width: 20em;
   }
 
-  .sign-in-form input:-webkit-autofill,  
-  .sign-in-form input:-webkit-autofill:hover,  
-  .sign-in-form input:-webkit-autofill:focus,  
+  .sign-in-form input:-webkit-autofill,
+  .sign-in-form input:-webkit-autofill:hover,
+  .sign-in-form input:-webkit-autofill:focus,
   .sign-in-form input:-webkit-autofill:active {
     -webkit-transition: "color 9999s ease-out, background-color 9999s ease-out";
     -webkit-transition-delay: 9999s;
@@ -162,4 +176,42 @@ export default {
     text-align: center;
   }
 
+  .modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    text-align: center;
+    width: 50vw;
+    height: fit-content;
+    max-width: 22em;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);
+    background: #FFF;
+    z-index: 999;
+    transform: none;
+  }
+
+  .modal h3 {
+    color: #2c3e50;
+  }
+
+  .modal p {
+    color: #2c3e50;
+  }
+
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 998;
+    background: #2c3e50;
+    opacity: 0.6;
+    cursor: pointer;
+  }
 </style>

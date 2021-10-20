@@ -19,12 +19,10 @@ const UserSchema = new mongoose.Schema(
     },
     firstName: {
       type: String,
-      lowercase: true,
       required: [true, "is required"]
     },
     lastName: {
       type: String,
-      lowercase: true,
       required: [true, "is required"]
     },
     salt: String,

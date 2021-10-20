@@ -4,6 +4,7 @@ import HomePage from "@/pages/HomePage";
 import Dashboard from "@/pages/Dashboard";
 import SignInPage from "@/pages/SignInPage";
 import QuizPage from "@/pages/QuizPage";
+import NotFound from "@/pages/NotFound";
 import LeaderboardPage from "@/pages/LeaderboardPage"
 import store from "@/vuex";
 
@@ -11,46 +12,62 @@ const routes = [
   {
     name: "leaderboard",
     path: "/leaderboard",
-    component: LeaderboardPage
+    component: LeaderboardPage,
+    meta: {
+      title: "Leaderboard"
+    }
   },
   {
     name: "quiz",
     path: "/quiz",
-    component: QuizPage
+    component: QuizPage,
+    meta: {
+      title: "Quiz",
+      requireAuth: true
+    }
   },
   {
     name: "dashboard",
     path: "/dashboard",
-    component: Dashboard
+    component: Dashboard,
+    meta: {
+      title: "Dashboard",
+      requireAuth: true
+    }
   },
   {
     name: "home",
     path: "",
-    component: HomePage
+    component: HomePage,
+    meta: {
+      title: "Home",
+      redirectDashboard: true
+    }
   },
   {
     name: "sign-up",
     path: "/sign-up",
-    component: AuthPage
+    component: AuthPage,
+    meta: {
+      title: "Sign Up",
+      redirectDashboard: true
+    }
   },
   {
     name: "sign-in",
     path: "/sign-in",
-    component: SignInPage
+    component: SignInPage,
+    meta: {
+      title: "Sign In",
+      redirectDashboard: true
+    }
   },
   {
-    name: "secure",
-    path: "/secure",
-    alias: "/protected",
-    component: {
-      template: `
-        <div>
-          This is a protected page-component
-        </div>
-      `
-    },
+    name: "not-found",
+    path: "*",
+    component: NotFound,
     meta: {
-      requireUserAuth: true
+      title: "Page Not Found"
     }
   }
 ];
@@ -63,19 +80,35 @@ const router = new VueRouter({
 router.beforeEach(async (to, from, next) => {
   const isUserAuth = store.state.userAuth.isAuth;
 
-  if (to.matched.some(record => record.meta.requireUserAuth)) {
-    // this route requires user auth, check if logged in
-    // if not, redirect to register/login page.
+  if (to.matched.some(record => record.meta.requireAuth)) {
     if (!isUserAuth) {
       next({
-        name: "login",
+        name: "home",
+        query: { ...to.query, redirect: to.name }
+      });
+    } else {
+      next();
+    }
+  } else if (to.matched.some(record => record.meta.redirectDashboard)) {
+    if (isUserAuth) {
+      next({
+        name: "dashboard",
         query: { ...to.query, redirect: to.name }
       });
     } else {
       next();
     }
   } else {
-    next(); // make sure to always call next()!
+    next();
+  }
+
+  const hasTitle = to.matched
+    .slice()
+    .reverse()
+    .find(r => r.meta && r.meta.title);
+
+  if (hasTitle) {
+    document.title = hasTitle.meta.title;
   }
 });
 

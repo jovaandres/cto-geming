@@ -1,16 +1,16 @@
 <template>
   <div class="dashboard">
-    <div class="dashboard-container">
-      <button class="sign-out">
+    <div class="dashboard-container" v-if="userAuth.isAuth">
+      <button class="sign-out" @click.prevent="handleLogout">
         <i class="fas fa-door-open"></i>
         <span>Sign out</span>
       </button>
-        <div class="inner-container">
-          <div class="profile">
-            <div class="profile-img"></div>
+      <div class="inner-container">
+        <div class="profile">
+          <div class="profile-img"></div>
           <div class="profile-content">
-            <h2 class="name">Username</h2>
-            <h2 class="rank">Rank #1</h2>
+            <h2 class="name">{{ userAuth.user.firstName + " " + userAuth.user.lastName }}</h2>
+            <h2 v-if="rank + 1" class="rank">Rank #{{ rank }}</h2>
           </div>
         </div>
         <div class="quiz-content">
@@ -23,7 +23,8 @@
           <div class="highscore-box">
             <h2>Highscore</h2>
             <div class="score">
-              <h1>1000</h1>
+              <h1 v-if="highScore + 1">{{ highScore }}</h1>
+              <p v-if="!(highScore + 1)">Take quiz to reveal rank</p>
             </div>
           </div>
         </div>
@@ -33,9 +34,47 @@
 </template>
 
 <script>
+import store from "@/vuex";
+import { mapActions } from "vuex";
+
 export default {
-  name: "dashboard"
-}
+  name: "dashboard",
+  data() {
+    return {
+      rank: 0,
+      highScore: 0
+    };
+  },
+  mounted() {
+    this.fetchData();
+  },
+  computed: {
+    userAuth() {
+      return store.state.userAuth;
+    }
+  },
+  methods: {
+    ...mapActions(["logout"]),
+    handleLogout() {
+      this.logout().then(() => {
+        this.$nextTick().then(() => {
+          this.$router.push({ name: "home" });
+        });
+      });
+    },
+    fetchData() {
+      this.$http
+        ._post("/leaderboard/rank", { user: this.userAuth.user.id })
+        .then(res => {
+          this.rank = res.rank;
+          this.highScore = res.highScore;
+        })
+        .catch(err => {
+          console.log(err.message);
+        });
+    }
+  }
+};
 </script>
 
 <style scoped>
@@ -50,7 +89,7 @@ export default {
     align-items: center;
     padding: 5em;
   }
-  
+
   .dashboard-container {
     padding: 10px 4em;
     z-index: 2;
@@ -136,7 +175,7 @@ export default {
   .quiz-content button:hover {
     background-color: #00adb540;
   }
-  
+
   .highscore-box {
     width: 100%;
     height: 100%;
@@ -157,5 +196,8 @@ export default {
     font-size: 4.5em;
   }
 
+  .score p {
+    font-size: 1.5em;
+  }
 
 </style>

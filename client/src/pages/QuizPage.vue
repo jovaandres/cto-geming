@@ -40,8 +40,12 @@
         <h1>{{ score }}</h1>
         <p>{{ message }}</p>
         <div class="action">
-          <button @click="toHome" class="button">Home</button>
-          <button @click="toLeaderboard" class="button">Leaderboard</button>
+          <router-link to="dashboard">
+            <button class="button">Home</button>
+          </router-link>
+          <router-link to="leaderboard">
+            <button class="button">Leaderboard</button>
+          </router-link>
         </div>
       </div>
     </transition>
@@ -95,7 +99,13 @@ export default {
   methods: {
     fetchData() {
       this.$http._get("/quiz").then(res => {
-        this.quizData = res.data;
+        if (!res.data) {
+          this.$http._post("/quiz").then(res => {
+            this.quizData = res.data;
+          });
+        } else {
+          this.quizData = res.data;
+        }
       });
     },
     next(gistId, filename) {
@@ -131,14 +141,6 @@ export default {
     updateAnswer(language, index) {
       this.answer[this.current] = language;
       this.sIndex = index;
-    },
-    toHome() {
-      const redirectRouteName = this.$route.query.redirect || "home";
-      return this.$router.push({ name: redirectRouteName, query: this.$route.query });
-    },
-    toLeaderboard() {
-      const redirectRouteName = this.$route.query.redirect || "leaderboard";
-      return this.$router.push({ name: redirectRouteName, query: this.$route.query });
     }
   }
 };
@@ -324,7 +326,7 @@ export default {
   left: 0;
   margin: auto;
   text-align: center;
-  width: fit-content;
+  width: 50vw;
   height: fit-content;
   max-width: 22em;
   padding: 2rem;
@@ -362,7 +364,7 @@ export default {
 
 .action {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
 }
 
 .action button {

@@ -51,8 +51,11 @@ module.exports = {
             insertData.push(newData);
           })
           Question.insertMany(insertData)
-            .then(() => {
-              return res.sendStatus(200);
+            .then((response) => {
+              return res.json({
+                error: false,
+                data: response
+              });
             })
             .catch(err => {
               return res.json({

@@ -6,10 +6,10 @@ module.exports = {
   create: [
     function(req, res, next) {
       const requiredProps = [
-        ['email', 'Your email is required'],
-        ['firstName', 'Your first name is required.'],
-        ['password', 'A password is required'],
-        ['lastName', 'Your last name is required']
+        ['email', 'Your email is required', true],
+        ['firstName', 'Your first name is required.', true],
+        ['password', 'A password is required', true],
+        ['lastName', 'Your last name is required', true]
       ];
 
       const { hasMissingProps, propErrors } = isBodyMissingProps(
