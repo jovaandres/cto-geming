@@ -1,6 +1,7 @@
 import VueRouter from "vue-router";
 import AuthPage from "@/pages/AuthPage";
 import HomePage from "@/pages/HomePage";
+import Dashboard from "@/pages/Dashboard";
 import SignInPage from "@/pages/SignInPage";
 import QuizPage from "@/pages/QuizPage";
 import LeaderboardPage from "@/pages/LeaderboardPage"
@@ -16,6 +17,11 @@ const routes = [
     name: "quiz",
     path: "/quiz",
     component: QuizPage
+  },
+  {
+    name: "dashboard",
+    path: "/dashboard",
+    component: Dashboard
   },
   {
     name: "home",

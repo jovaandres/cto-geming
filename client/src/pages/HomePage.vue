@@ -66,7 +66,7 @@ export default {
     height: 100vh;
     width: 100vw;
     color: #EEEEEE;
-    /* overflow: hidden; */
+    overflow: hidden;
     display: flex;
   }
   .left {
