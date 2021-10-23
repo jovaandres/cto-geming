@@ -22,6 +22,7 @@
           <button
             type="submit"
             class="next-btn"
+            v-if="answered"
             v-show="!submitted"
             @click="next(quizData[current].gistId, quizData[current].filename)"
           >
@@ -83,6 +84,7 @@ export default {
       showModal: false,
       score: 0,
       message: "",
+      answered: false,
       submitted: false,
       timeTaken: Date.now(),
       sIndex: -1
@@ -110,6 +112,7 @@ export default {
     },
     next(gistId, filename) {
       if (this.current !== 1) {
+        this.answered = false;
         this.answer[this.current] = {
           gistId: gistId,
           filename: filename,
@@ -141,6 +144,7 @@ export default {
     updateAnswer(language, index) {
       this.answer[this.current] = language;
       this.sIndex = index;
+      this.answered = true;
     }
   }
 };

@@ -3,17 +3,19 @@
     <particle1 />
     <div class="title">
       <h1>{{ title }}</h1>
-      <button v-if="isHost" @click="startGame" class="start-game">START</button>
+      <button v-if="isHost && !isStart" @click="startGame" class="start-game">START</button>
     </div>
     <div class="table-container" v-if="players.length">
       <table>
         <tr>
           <td><b>Name</b></td>
           <td><b>Score</b></td>
+          <td><b>Time</b></td>
         </tr>
-        <tr v-for="item in players" :key="item">
+        <tr v-for="item in players" :key="item.socketId">
           <td>{{ item.name }}</td>
           <td>{{ item.score }}</td>
+          <td>{{ item.timeTaken }}</td>
         </tr>
       </table>
     </div>
@@ -22,6 +24,7 @@
 
 <script>
 import particle1 from "@/components/particle1";
+import store from "@/vuex";
 
 export default {
   name: "WaitingRoom",
@@ -33,20 +36,37 @@ export default {
       players: [],
       roomId: null,
       isHost: false,
+      isStart: false,
       title: "Waiting Room"
     };
   },
   mounted() {
     this.gameConfig();
+    this.getPlayer();
+  },
+  computed: {
+    userAuth() {
+      return store.state.userAuth;
+    }
   },
   methods: {
     gameConfig() {
       const query = this.$route.query.roomId;
+      const host = this.$route.query.host;
       this.roomId = query;
-      this.isHost = query === this.$socket.id;
+      this.isHost = host === this.userAuth.user.id;
+    },
+    getPlayer() {
+      this.$socket.emit("leader", this.roomId, data => {
+        this.players = data.players;
+      });
     },
     startGame() {
-      this.$socket.emit("start", this.roomId);
+      this.$socket.emit("start", this.roomId, data => {
+        if (!data.success) {
+          window.alert(data.message);
+        }
+      });
     }
   },
   sockets: {
@@ -60,6 +80,7 @@ export default {
         });
       } else {
         this.title = "Leaderboard";
+        this.isStart = true;
       }
     },
     gameDestroyed: function() {

@@ -11,11 +11,18 @@
           <input
             type="text"
             class="text-field"
+            name="name"
+            placeholder="Your Name"
+            v-model="playerName"
+          />
+          <input
+            type="text"
+            class="text-field"
             name="game-code"
             placeholder="Game Code"
             v-model="gameCode"
           />
-          <button class="btn-join" @click="join" v-if="gameCode">GO</button>
+          <button class="btn-join" @click="join" v-if="gameCode && playerName">GO</button>
         </div>
       </transition>
       <h1 class="title">
@@ -76,6 +83,7 @@ export default {
     return {
       action: "",
       gameCode: null,
+      playerName: null,
       showModal: false
     };
   },
@@ -88,15 +96,19 @@ export default {
       this.showModal = true;
     },
     join() {
-      this.$socket.emit("join", { userId: this.$socket.id, gameCode: this.gameCode }, data => {
-        if (data.success) {
-          this.$nextTick().then(() => {
-            this.$router.push({ name: "waiting", query: { roomId: this.gameCode } });
-          });
-        } else {
-          window.alert(data.message);
+      this.$socket.emit(
+        "join",
+        { name: this.playerName, userId: this.$socket.id, gameCode: this.gameCode },
+        data => {
+          if (data.success) {
+            this.$nextTick().then(() => {
+              this.$router.push({ name: "waiting", query: { roomId: this.gameCode } });
+            });
+          } else {
+            window.alert(data.message);
+          }
         }
-      });
+      );
     }
   }
 };

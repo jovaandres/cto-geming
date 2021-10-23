@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const roomSchema = new mongoose.Schema({
+  host: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
   roomId: {
     type: String,
     required: true
@@ -10,6 +14,10 @@ const roomSchema = new mongoose.Schema({
     default: []
   },
   isStart: {
+    type: Boolean,
+    default: false
+  },
+  isEnd: {
     type: Boolean,
     default: false
   }

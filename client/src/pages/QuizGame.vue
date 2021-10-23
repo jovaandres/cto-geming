@@ -1,19 +1,27 @@
 <template>
-  <div class="quiz-page" v-if="quizData">
+  <div class="quiz-page" v-if="quizData.length">
     <div class="quiz-container">
-      <h1 class="point">Score: {{ quizData.score }}</h1>
+      <h1 class="point">Score: {{ quizData[current].score }}</h1>
       <div class="container">
         <div class="choice-block">
-          <vue-embed-gist v-bind:gist-id="quizData.gistId" v-bind:file="quizData.filename" />
+          <vue-embed-gist
+            v-bind:gist-id="quizData[current].gistId"
+            v-bind:file="quizData[current].filename"
+          />
         </div>
         <div class="ans-container">
           <Button
-            v-for="(choice, index) in quizData.choice"
+            v-for="(choice, index) in quizData[current].choice"
             v-bind:choice="choice"
             v-on:click.native="updateAnswer(choice, index)"
             v-bind:class="{ selected: index === sIndex }"
             :key="choice"
           />
+        </div>
+        <div class="next-container" v-if="answered">
+          <button @click.prevent="submit" type="submit" class="next-btn">
+            Submit
+          </button>
         </div>
       </div>
     </div>
@@ -53,7 +61,6 @@
 <script>
 import Button from "../components/Button.vue";
 import VueEmbedGist from "vue-embed-gist";
-import store from "@/vuex";
 
 export default {
   name: "QuizGamePage",
@@ -63,20 +70,16 @@ export default {
   },
   data() {
     return {
-      quizData: null,
-      answer: {},
-      showModal: false,
+      answer: null,
+      answered: false,
+      current: 0,
       message: "",
-      submitted: false,
-      timeTaken: Date.now(),
+      quizData: null,
+      roomId: null,
+      showModal: false,
       sIndex: -1,
-      roomId: null
+      timeTaken: Date.now()
     };
-  },
-  computed: {
-    userId() {
-      return store.state.userAuth.user;
-    }
   },
   mounted() {
     this.fetchData();
@@ -84,18 +87,32 @@ export default {
   methods: {
     fetchData() {
       const query = this.$route.query.roomId;
+      this.roomId = query;
       this.$socket.emit("play", query, data => {
         if (data.success) {
           this.quizData = data.questions;
-          console.log(data.questions);
         } else {
           window.alert(data.message);
         }
       });
     },
     updateAnswer(language, index) {
-      this.answer[this.current] = language;
+      this.answer = language;
       this.sIndex = index;
+      this.answered = true;
+    },
+    submit() {
+      let data = {
+        roomId: this.roomId,
+        gistId: this.quizData[this.current].gistId,
+        answer: this.answer,
+        timeTaken: (Date.now() - this.timeTaken) / 1000
+      };
+      this.$socket.emit("submit", data);
+      if (this.current !== 3) {
+        this.sIndex = -1;
+        this.current++;
+      }
     }
   },
   sockets: {

@@ -75,6 +75,7 @@ export default {
       showModal: false,
       showModal2: false,
       action: "",
+      host: null,
       quizCode: null,
       gameCode: null
     };
@@ -110,21 +111,33 @@ export default {
     createGame() {
       this.showModal = true;
       this.action = "CREATE GAME";
-      this.quizCode = this.$socket.id;
-      this.$socket.emit("create", this.quizCode);
+      this.$socket.emit("create", this.userAuth.user.id, data => {
+        this.quizCode = data.quizCode;
+        this.host = this.userAuth.user.id;
+      });
     },
     waiting() {
-      this.$router.push({ name: "waiting", query: { roomId: this.quizCode } });
+      this.$router.push({ name: "waiting", query: { roomId: this.quizCode, host: this.host } });
     },
     joinGame() {
       this.action = "JOIN";
       this.showModal2 = true;
     },
     join() {
-      this.$socket.emit("join", { userId: this.$socket.id, gameCode: this.gameCode });
-      this.$nextTick().then(() => {
-        this.$router.push({ name: "waiting", query: { roomId: this.gameCode } });
-      });
+      const name = this.userAuth.user.firstName + " " + this.userAuth.user.lastName;
+      this.$socket.emit(
+        "join",
+        { name: name, userId: this.$socket.id, gameCode: this.gameCode },
+        data => {
+          if (data.success) {
+            this.$nextTick().then(() => {
+              this.$router.push({ name: "waiting", query: { roomId: this.gameCode } });
+            });
+          } else {
+            window.alert(data.message);
+          }
+        }
+      );
     }
   }
 };

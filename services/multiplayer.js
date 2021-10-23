@@ -6,15 +6,40 @@ const Question = require("../models/Question");
 
 const iom = socks.getNamespace("multiplayer");
 
-iom.on("connection", async (socket) => {
-  console.log("Client connected", socket.id);
+const createCode = async () => {
+  let random = Math.ceil(Math.random() * 899999) + 100000;
+  let exists = await Room.count({roomId: random});
+  if (exists) {
+    return await createCode();
+  } else {
+    return random.toString();
+  }
+}
 
-  socket.on("create", async (roomId) => {
+iom.on("connection", async (socket) => {
+
+  socket.on("create", async (host, callback) => {
+    let roomId = await createCode();
     let room = new Room({
+      host: host,
       roomId: roomId
     });
     await room.save();
     socket.join(roomId);
+    callback({
+      quizCode: roomId
+    })
+  });
+
+  socket.on("leader", async (roomId, callback) => {
+    let players = await Player.find({roomId: roomId}).sort({
+      'score': 'desc',
+      'timeTaken': 'asc'
+    });
+
+    callback({
+      players: players || []
+    });
   });
 
   socket.on("join", async (data, callback) => {
@@ -22,7 +47,8 @@ iom.on("connection", async (socket) => {
     let room = await Room.findOne(filter)
     if (room && !room.isStart) {
       let newPlayer = new Player({
-        name: data.userId,
+        name: data.name,
+        socketId: data.userId,
         roomId: data.gameCode
       });
       await newPlayer.save();
@@ -40,18 +66,25 @@ iom.on("connection", async (socket) => {
     }
   });
 
-  socket.on("start", async (roomId) => {
-    let field = {"gistId": 1, "filename": 1, "score": 1, "choice": 1};
-    const count = Math.floor(Math.random() * 100);
-    const newQuestion = await Question.findOne({}, field).skip(count);
+  socket.on("start", async (roomId, callback) => {
+    let players = await Player.count({roomId: roomId});
+    if (players) {
+      let field = {"gistId": 1, "filename": 1, "score": 1, "choice": 1};
+      const count = Math.floor(Math.random() * 96);
+      const newQuestion = await Question.find({}, field).skip(count).limit(4);
 
-    let room = await Room.findOne({roomId: roomId});
-    let question = room.questions;
-    question.push(newQuestion);
+      await Room.findOneAndUpdate({roomId: roomId}, {questions: newQuestion, isStart: true});
 
-    await Room.findOneAndUpdate({roomId: roomId}, {questions: question});
-
-    iom.to(roomId).emit("startGame", roomId);
+      callback({
+        success: true
+      });
+      iom.to(roomId).emit("startGame", roomId);
+    } else {
+      callback({
+        success: false,
+        message: "Cannot start, no players joined!"
+      });
+    }
   });
 
   socket.on("play", async (roomId, callback) => {
@@ -60,7 +93,7 @@ iom.on("connection", async (socket) => {
     if (questions) {
       callback({
         success: true,
-        questions: questions[0]
+        questions: questions
       });
     } else {
       callback({
@@ -70,20 +103,26 @@ iom.on("connection", async (socket) => {
     }
   });
 
-  socket.on("disconnect", async (reason) => {
-    let room = await Room.findOne({roomId: socket.id});
-    if (room) {
-      await Room.deleteOne({roomId: room.roomId});
-      iom.to(room.roomId).emit("gameDestroyed");
-    } else {
-      let deletedPlayer = await Player.findOne({name: socket.id});
-      if (deletedPlayer) {
-        let roomId = deletedPlayer.roomId;
-        await Player.deleteOne({name: socket.id});
-        let allPlayer = await Player.find({roomId: roomId});
-        iom.to(roomId).emit("players", allPlayer);
-      }
+  socket.on("submit", async (data) => {
+    let question = await Question.findOne({gistId: data.gistId});
+    let roomId = data.roomId;
+    let timeTaken = data.timeTaken.toFixed(2);
+    if (question.language === data.answer) {
+      let player = await Player.findOne({socketId: socket.id});
+      await Player.findOneAndUpdate({socketId: socket.id},
+        {score: question.score + player.score, timeTaken: timeTaken});
+      let allPlayers = await Player.find({roomId: roomId}).sort({
+        'score': 'desc',
+        'timeTaken': 'asc'
+      });
+      iom.to(roomId).emit("players", allPlayers);
     }
-    console.log("Client disconnect", socket.id, "reason", reason);
+  });
+
+  socket.on("disconnect", async () => {
+    let deletedPlayer = await Player.count({socketId: socket.id});
+    if (deletedPlayer) {
+      await Player.deleteOne({socketId: socket.id});
+    }
   });
 })

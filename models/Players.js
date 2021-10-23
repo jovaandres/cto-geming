@@ -3,7 +3,11 @@ const mongoose = require('mongoose');
 const playerSchema = new mongoose.Schema({
   name: {
     type: String,
-    default: "Guest"
+    required: true
+  },
+  socketId: {
+    type: String,
+    required: true
   },
   roomId: {
     type: String,
@@ -12,6 +16,9 @@ const playerSchema = new mongoose.Schema({
   score: {
     type: Number,
     default: 0
+  },
+  timeTaken: {
+    type: Number
   }
 });
 

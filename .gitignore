@@ -65,3 +65,4 @@ typings/
 !tachyons.css
 
 .idea
+/package-lock.json
