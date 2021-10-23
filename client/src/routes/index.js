@@ -4,9 +4,11 @@ import HomePage from "@/pages/HomePage";
 import Dashboard from "@/pages/Dashboard";
 import SignInPage from "@/pages/SignInPage";
 import QuizPage from "@/pages/QuizPage";
+import QuizGame from "@/pages/QuizGame";
 import NotFound from "@/pages/NotFound";
 import LeaderboardPage from "@/pages/LeaderboardPage"
 import store from "@/vuex";
+import WaitingPage from "@/pages/WaitingPage";
 
 const routes = [
   {
@@ -24,6 +26,22 @@ const routes = [
     meta: {
       title: "Quiz",
       requireAuth: true
+    }
+  },
+  {
+    name: "quizgame",
+    path: "/quizgame",
+    component: QuizGame,
+    meta: {
+      title: "Quiz Game"
+    }
+  },
+  {
+    name: "waiting",
+    path: "/waiting",
+    component: WaitingPage,
+    meta: {
+      title: "Waiting Room"
     }
   },
   {

@@ -1,38 +1,24 @@
 <template>
-  <div class="quiz-page" v-if="quizData.length">
+  <div class="quiz-page" v-if="quizData">
     <div class="quiz-container">
-      <h1 class="point">Score: {{ quizData[current].score }}</h1>
+      <h1 class="point">Score: {{ quizData.score }}</h1>
       <div class="container">
         <div class="choice-block">
-          <vue-embed-gist
-            v-bind:gist-id="quizData[current].gistId"
-            v-bind:file="quizData[current].filename"
-          />
+          <vue-embed-gist v-bind:gist-id="quizData.gistId" v-bind:file="quizData.filename" />
         </div>
         <div class="ans-container">
           <Button
-            v-for="(choice, index) in quizData[current].choice"
+            v-for="(choice, index) in quizData.choice"
             v-bind:choice="choice"
             v-on:click.native="updateAnswer(choice, index)"
             v-bind:class="{ selected: index === sIndex }"
             :key="choice"
           />
         </div>
-        <div class="next-container">
-          <button
-            type="submit"
-            class="next-btn"
-            v-show="!submitted"
-            @click="next(quizData[current].gistId, quizData[current].filename)"
-          >
-            {{ current !== 1 ? "Next" : "Submit" }}
-            <i class="fas fa-arrow-right"></i>
-          </button>
-        </div>
       </div>
     </div>
     <transition name="fade" appear>
-      <div class="modal-overlay" v-if="showModal"></div>
+      <div class="modal-overlay" v-if="showModal" @click="showModal = false"></div>
     </transition>
     <transition name="pop" appear>
       <div class="modal" role="dialog" v-if="showModal">
@@ -70,22 +56,21 @@ import VueEmbedGist from "vue-embed-gist";
 import store from "@/vuex";
 
 export default {
-  name: "QuizPage",
+  name: "QuizGamePage",
   components: {
     Button,
     VueEmbedGist
   },
   data() {
     return {
-      quizData: [],
-      current: 0,
-      answer: Array(2),
+      quizData: null,
+      answer: {},
       showModal: false,
-      score: 0,
       message: "",
       submitted: false,
       timeTaken: Date.now(),
-      sIndex: -1
+      sIndex: -1,
+      roomId: null
     };
   },
   computed: {
@@ -98,49 +83,26 @@ export default {
   },
   methods: {
     fetchData() {
-      this.$http._get("/quiz").then(res => {
-        if (!res.data) {
-          this.$http._post("/quiz").then(res => {
-            this.quizData = res.data;
-          });
+      const query = this.$route.query.roomId;
+      this.$socket.emit("play", query, data => {
+        if (data.success) {
+          this.quizData = data.questions;
+          console.log(data.questions);
         } else {
-          this.quizData = res.data;
+          window.alert(data.message);
         }
       });
-    },
-    next(gistId, filename) {
-      if (this.current !== 1) {
-        this.answer[this.current] = {
-          gistId: gistId,
-          filename: filename,
-          language: this.answer[this.current]
-        };
-        this.current++;
-        this.sIndex = -1;
-      } else {
-        this.answer[this.current] = {
-          gistId: gistId,
-          filename: filename,
-          language: this.answer[this.current]
-        };
-        this.timeTaken = Date.now() - this.timeTaken;
-        this.$http
-          ._post("/quiz/grade", {
-            data: this.answer,
-            userId: this.userId.id,
-            timeTaken: this.timeTaken / 1000
-          })
-          .then(res => {
-            this.score = res.score;
-            this.message = res.message;
-            this.submitted = true;
-            this.showModal = true;
-          });
-      }
     },
     updateAnswer(language, index) {
       this.answer[this.current] = language;
       this.sIndex = index;
+    }
+  },
+  sockets: {
+    gameDestroyed: function() {
+      this.$nextTick().then(() => {
+        this.$router.push({ name: "home" });
+      });
     }
   }
 };

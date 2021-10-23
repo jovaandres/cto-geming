@@ -3,11 +3,18 @@ require('module-alias/register');
 const createError = require('http-errors');
 const express = require('express');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
 const logger = require('morgan');
 const helmet = require('helmet');
 const history = require('connect-history-api-fallback');
 
-const app = express();
+const app = express()
+
+app.use(cors({
+  origin: "http://localhost:8080",
+  method: ['GET', 'POST', 'PUT'],
+  credentials: true
+}));
 
 const sixtyDaysInSeconds = 5184000
 app.use(helmet.hsts({

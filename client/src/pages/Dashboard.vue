@@ -1,5 +1,32 @@
 <template>
   <div class="dashboard">
+    <transition name="fade" appear>
+      <div class="modal-overlay" v-if="showModal" @click="showModal = false"></div>
+    </transition>
+    <transition name="pop" appear>
+      <div class="modal" role="dialog" v-if="showModal">
+        <h3>{{ action }}</h3>
+        <p>Game Code</p>
+        <p>{{ quizCode }}</p>
+        <button @click="waiting">GO</button>
+      </div>
+    </transition>
+    <transition name="fade" appear>
+      <div class="modal-overlay" v-if="showModal2" @click="showModal2 = false"></div>
+    </transition>
+    <transition name="pop" appear>
+      <div class="modal" role="dialog" v-if="showModal2">
+        <h3>{{ action }}</h3>
+        <input
+          type="text"
+          class="text-field"
+          name="game-code"
+          placeholder="Game Code"
+          v-model="gameCode"
+        />
+        <button class="btn-join" @click="join" v-if="gameCode">GO</button>
+      </div>
+    </transition>
     <div class="dashboard-container" v-if="userAuth.isAuth">
       <button class="sign-out" @click.prevent="handleLogout">
         <i class="fas fa-door-open"></i>
@@ -20,6 +47,8 @@
           <router-link to="leaderboard">
             <button class="leaderboard-btn">Leaderboard</button>
           </router-link>
+          <button @click="createGame" class="create-btn">Create</button>
+          <button @click="joinGame" class="create-btn">Join</button>
           <div class="highscore-box">
             <h2>Highscore</h2>
             <div class="score">
@@ -42,7 +71,12 @@ export default {
   data() {
     return {
       rank: 0,
-      highScore: 0
+      highScore: 0,
+      showModal: false,
+      showModal2: false,
+      action: "",
+      quizCode: null,
+      gameCode: null
     };
   },
   mounted() {
@@ -72,6 +106,25 @@ export default {
         .catch(err => {
           console.log(err.message);
         });
+    },
+    createGame() {
+      this.showModal = true;
+      this.action = "CREATE GAME";
+      this.quizCode = this.$socket.id;
+      this.$socket.emit("create", this.quizCode);
+    },
+    waiting() {
+      this.$router.push({ name: "waiting", query: { roomId: this.quizCode } });
+    },
+    joinGame() {
+      this.action = "JOIN";
+      this.showModal2 = true;
+    },
+    join() {
+      this.$socket.emit("join", { userId: this.$socket.id, gameCode: this.gameCode });
+      this.$nextTick().then(() => {
+        this.$router.push({ name: "waiting", query: { roomId: this.gameCode } });
+      });
     }
   }
 };
@@ -200,4 +253,42 @@ export default {
     font-size: 1.5em;
   }
 
+  .modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    text-align: center;
+    width: 50vw;
+    height: fit-content;
+    max-width: 22em;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);
+    background: #FFF;
+    z-index: 999;
+    transform: none;
+  }
+
+  .modal h3 {
+    color: #2c3e50;
+  }
+
+  .modal p {
+    color: #2c3e50;
+  }
+
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 998;
+    background: #2c3e50;
+    opacity: 0.6;
+    cursor: pointer;
+  }
 </style>

@@ -4,10 +4,11 @@
  * Module dependencies.
  */
 require("dotenv").config();
-var app = require('../app');
+var app = require("../app");
 var debug = require('debug')('cto-app:server');
 var http = require('http');
 var mongoose = require('mongoose');
+const { Server } = require("socket.io");
 /**
  * Get port from environment and store in Express.
  */
@@ -19,6 +20,16 @@ app.set('port', port);
  * Create https server.
  */
 var server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:8080",
+    credentials: true
+  }
+});
+
+const SocketIO = require("../services/socket");
+const socks = new SocketIO(io);
+require("../services/multiplayer");
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -98,3 +109,5 @@ function onListening() {
   debug('Listening on ' + bind);
   console.log(`Listening on port ${port}`);
 }
+
+module.exports = io;
