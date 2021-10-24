@@ -61,6 +61,8 @@
 <script>
 import Button from "../components/Button.vue";
 import VueEmbedGist from "vue-embed-gist";
+import store from "@/vuex";
+import { mapActions } from "vuex";
 
 export default {
   name: "QuizGamePage",
@@ -84,11 +86,16 @@ export default {
   mounted() {
     this.fetchData();
   },
+  computed: {
+    gameData() {
+      return store.state.initGame;
+    }
+  },
   methods: {
+    ...mapActions(["updateGameState"]),
     fetchData() {
-      const query = this.$route.query.roomId;
-      this.roomId = query;
-      this.$socket.emit("play", query, data => {
+      this.roomId = this.gameData.roomId;
+      this.$socket.emit("play", this.roomId, data => {
         if (data.success) {
           this.quizData = data.questions;
         } else {
@@ -102,24 +109,30 @@ export default {
       this.answered = true;
     },
     submit() {
-      let data = {
-        roomId: this.roomId,
-        gistId: this.quizData[this.current].gistId,
-        answer: this.answer,
-        timeTaken: (Date.now() - this.timeTaken) / 1000
-      };
-      this.$socket.emit("submit", data);
-      if (this.current !== 3) {
-        this.sIndex = -1;
-        this.current++;
+      if (!this.gameData.isEnd) {
+        this.answered = false;
+        let data = {
+          roomId: this.roomId,
+          gistId: this.quizData[this.current].gistId,
+          answer: this.answer,
+          timeTaken: (Date.now() - this.timeTaken) / 1000
+        };
+        this.$socket.emit("submit", data);
+        if (this.current !== 3) {
+          this.sIndex = -1;
+          this.current++;
+        }
+      } else {
+        window.alert("Game has ended!");
       }
     }
   },
   sockets: {
-    gameDestroyed: function() {
-      this.$nextTick().then(() => {
-        this.$router.push({ name: "home" });
-      });
+    endGame: function() {
+      this.updateGameState("endGame");
+      if (!this.gameData.isHost) {
+        window.alert("Game ended by host");
+      }
     }
   }
 };

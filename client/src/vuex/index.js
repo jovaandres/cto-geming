@@ -13,11 +13,26 @@ export default new Vuex.Store({
     userAuth: {
       isAuth: false,
       user: null
+    },
+    initGame: {
+      roomId: null,
+      isHost: null,
+      isStart: false,
+      isEnd: false
     }
   },
   mutations: {
     setUserAuth(state, userAuth) {
       state.userAuth = { ...userAuth, user: { ...userAuth.user, accessToken: undefined } };
+    },
+    setInitGame(state, initGame) {
+      state.initGame = { ...initGame, isStart: false, isEnd: false };
+    },
+    startGame(state) {
+      state.initGame.isStart = true;
+    },
+    endGame(state) {
+      state.initGame.isEnd = true;
     },
     resetAuth(state) {
       state.userAuth = {
@@ -29,6 +44,12 @@ export default new Vuex.Store({
   actions: {
     updateUserAuth(context, authData) {
       context.commit("setUserAuth", authData);
+    },
+    updateInitGame(context, gameData) {
+      context.commit("setInitGame", gameData);
+    },
+    updateGameState(context, status) {
+      context.commit(status);
     },
     logout(context) {
       // clear jwt from localforage

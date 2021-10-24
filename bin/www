@@ -109,5 +109,3 @@ function onListening() {
   debug('Listening on ' + bind);
   console.log(`Listening on port ${port}`);
 }
-
-module.exports = io;

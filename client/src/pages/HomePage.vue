@@ -77,6 +77,7 @@
 <script>
 
 import particle2 from "@/components/particle2";
+import { mapActions } from "vuex";
 export default {
   name: "HomePage",
   data() {
@@ -91,6 +92,7 @@ export default {
     particle2
   },
   methods: {
+    ...mapActions(["updateInitGame"]),
     joinGame() {
       this.action = "JOIN";
       this.showModal = true;
@@ -102,7 +104,12 @@ export default {
         data => {
           if (data.success) {
             this.$nextTick().then(() => {
-              this.$router.push({ name: "waiting", query: { roomId: this.gameCode } });
+              let gameData = {
+                roomId: this.gameCode,
+                isHost: false
+              };
+              this.updateInitGame(gameData);
+              this.$router.push({ name: "waiting" });
             });
           } else {
             window.alert(data.message);

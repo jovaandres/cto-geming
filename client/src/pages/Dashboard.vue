@@ -75,7 +75,6 @@ export default {
       showModal: false,
       showModal2: false,
       action: "",
-      host: null,
       quizCode: null,
       gameCode: null
     };
@@ -89,7 +88,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["logout"]),
+    ...mapActions(["updateInitGame", "logout"]),
     handleLogout() {
       this.logout().then(() => {
         this.$nextTick().then(() => {
@@ -113,11 +112,16 @@ export default {
       this.action = "CREATE GAME";
       this.$socket.emit("create", this.userAuth.user.id, data => {
         this.quizCode = data.quizCode;
-        this.host = this.userAuth.user.id;
+
+        let gameData = {
+          roomId: this.quizCode,
+          isHost: true
+        };
+        this.updateInitGame(gameData);
       });
     },
     waiting() {
-      this.$router.push({ name: "waiting", query: { roomId: this.quizCode, host: this.host } });
+      this.$router.push({ name: "waiting" });
     },
     joinGame() {
       this.action = "JOIN";
@@ -131,7 +135,12 @@ export default {
         data => {
           if (data.success) {
             this.$nextTick().then(() => {
-              this.$router.push({ name: "waiting", query: { roomId: this.gameCode } });
+              let gameData = {
+                roomId: this.gameCode,
+                isHost: false
+              };
+              this.updateInitGame(gameData);
+              this.$router.push({ name: "waiting" });
             });
           } else {
             window.alert(data.message);

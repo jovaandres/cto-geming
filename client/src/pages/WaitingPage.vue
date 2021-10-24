@@ -4,6 +4,7 @@
     <div class="title">
       <h1>{{ title }}</h1>
       <button v-if="isHost && !isStart" @click="startGame" class="start-game">START</button>
+      <button v-if="isHost && !isEnd && isStart" @click="endGame" class="start-game">END</button>
     </div>
     <div class="table-container" v-if="players.length">
       <table>
@@ -25,6 +26,7 @@
 <script>
 import particle1 from "@/components/particle1";
 import store from "@/vuex";
+import { mapActions } from "vuex";
 
 export default {
   name: "WaitingRoom",
@@ -34,59 +36,64 @@ export default {
   data() {
     return {
       players: [],
-      roomId: null,
       isHost: false,
       isStart: false,
+      isEnd: false,
       title: "Waiting Room"
     };
   },
   mounted() {
     this.gameConfig();
-    this.getPlayer();
   },
   computed: {
     userAuth() {
       return store.state.userAuth;
+    },
+    gameData() {
+      return store.state.initGame;
     }
   },
   methods: {
+    ...mapActions(["updateGameState"]),
     gameConfig() {
-      const query = this.$route.query.roomId;
-      const host = this.$route.query.host;
-      this.roomId = query;
-      this.isHost = host === this.userAuth.user.id;
-    },
-    getPlayer() {
-      this.$socket.emit("leader", this.roomId, data => {
+      this.isHost = this.gameData.isHost;
+      this.isStart = this.gameData.isStart;
+      this.isEnd = this.gameData.isEnd;
+      this.$socket.emit("rejoin", this.gameData.roomId, data => {
         this.players = data.players;
       });
     },
     startGame() {
-      this.$socket.emit("start", this.roomId, data => {
+      this.$socket.emit("start", this.gameData.roomId, data => {
         if (!data.success) {
           window.alert(data.message);
         }
       });
+    },
+    endGame: function() {
+      this.$socket.emit("end", this.gameData.roomId);
     }
   },
   sockets: {
     players: function(data) {
       this.players = data;
     },
-    startGame: function(room) {
+    startGame: function() {
+      this.updateGameState("startGame");
       if (!this.isHost) {
         this.$nextTick().then(() => {
-          this.$router.push({ name: "quizgame", query: { roomId: room } });
+          this.$router.push({ name: "quizgame" });
         });
       } else {
         this.title = "Leaderboard";
         this.isStart = true;
       }
     },
-    gameDestroyed: function() {
-      this.$nextTick().then(() => {
-        this.$router.push({ name: "home" });
-      });
+    endGame: function() {
+      this.isEnd = true;
+      if (!this.isHost) {
+        window.alert("Game session ended by host");
+      }
     }
   }
 };

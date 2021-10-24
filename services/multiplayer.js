@@ -31,12 +31,13 @@ iom.on("connection", async (socket) => {
     })
   });
 
-  socket.on("leader", async (roomId, callback) => {
+  socket.on("rejoin", async (roomId, callback) => {
     let players = await Player.find({roomId: roomId}).sort({
       'score': 'desc',
       'timeTaken': 'asc'
     });
 
+    socket.join(roomId);
     callback({
       players: players || []
     });
@@ -78,7 +79,7 @@ iom.on("connection", async (socket) => {
       callback({
         success: true
       });
-      iom.to(roomId).emit("startGame", roomId);
+      iom.to(roomId).emit("startGame", null);
     } else {
       callback({
         success: false,
@@ -119,10 +120,8 @@ iom.on("connection", async (socket) => {
     }
   });
 
-  socket.on("disconnect", async () => {
-    let deletedPlayer = await Player.count({socketId: socket.id});
-    if (deletedPlayer) {
-      await Player.deleteOne({socketId: socket.id});
-    }
-  });
+  socket.on("end", async (roomId) => {
+    await Room.findOneAndUpdate({roomId: roomId}, {isEnd: true});
+    iom.to(roomId).emit("endGame", null);
+  })
 })
