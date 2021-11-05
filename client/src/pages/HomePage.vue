@@ -62,7 +62,7 @@
             Sign Up
           </button>
         </router-link>
-        <button @click="joinGame" class="create-btn">Join</button>
+        <button @click="joinGame" class="btn-link create-btn">Join</button>
     </div>
     </div>
     <div class="right">
@@ -244,10 +244,47 @@ export default {
     background: #FFF;
     z-index: 999;
     transform: none;
+    display: flex;
+    flex-direction: column;
+    padding-inline: 3rem;
+    gap: 13px;
+  }
+
+  .modal .btn-join {
+    background: #222831;
+    width: 38%;
+    margin-inline: auto;
+    padding: 5px;
+    border-radius: 10px;
+    color: #EEEEEE;
+    font-size: 20px;
+    transition: .3s;
+    margin-top: 5px;
+  }
+
+  .modal .btn-join:hover {
+    background: #22283140;
+    font-weight: 700;
+    color: #222831;
+  }
+
+  .modal input {
+    border: 1px solid #2c3e50;
+    padding: 10px;
+  }
+
+  .modal input::placeholder {
+    color: #222831;
+  }
+
+  .modal input:focus {
+    outline-offset: .25rem;
   }
 
   .modal h3 {
     color: #2c3e50;
+    font-weight: 700;
+    font-size: 32px;
   }
 
   .modal p {
@@ -264,5 +301,11 @@ export default {
     background: #2c3e50;
     opacity: 0.6;
     cursor: pointer;
+  }
+  .create-btn {
+    border: 1px solid #EEEEEE;
+  }
+  .create-btn:hover {
+    box-shadow: 2px 2px 8px 1px #00ADB560;
   }
 </style>
