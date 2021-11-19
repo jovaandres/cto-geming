@@ -1,25 +1,58 @@
 const Question = require('../models/Question');
 const axios = require('axios');
 const {randomLang, programmingLanguage} = require('../utils/randomLang');
+const redis = require("./redis");
+
+function splitDoc(docs, opt="", spl){
+  const field = opt.split(' ');
+  const fieldEx = field.splice(spl);
+  let include = [];
+  let exclude = [];
+  docs.forEach(doc => {
+    let resIn = { };
+    let resEx = { };
+    field.forEach(el => {
+      resIn[el] = doc[el];
+    });
+    fieldEx.forEach(el => {
+      resEx[el] = doc[el];
+    })
+    include.push(resIn);
+    exclude.push(resEx);
+  })
+  return {
+    include: include,
+    exclude: exclude
+  };
+}
 
 module.exports = {
   getQuiz: [
     function (req, res, next) {
 
       const questionLimit = req.query.limit || 15;
-      let field = {"gistId": 1, "filename": 1, "score": 1, "choice": 1}
+      let userId = req.query.id;
 
-      Question.findRandom({}, field, {limit: questionLimit}, function (err, results) {
+      Question.findRandom({}, {}, {limit: questionLimit}, function (err, results) {
         if (err) {
           return res.json({
             error: true,
             message: err.message
           });
         } else {
-          return res.json({
-            error: false,
-            data: results
-          });
+          if (results) {
+            let data = splitDoc(results, "gistId filename score choice language score", 4);
+            redis.set("quiz:"+userId, JSON.stringify(data.exclude), 'EX', 60 * 60 * 12);
+            return res.json({
+              error: false,
+              data: data.include
+            });
+          } else {
+            return res.json({
+              error: true,
+              data: null
+            });
+          }
         }
       });
     }

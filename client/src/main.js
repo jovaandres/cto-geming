@@ -12,7 +12,7 @@ Vue.use(VueRouter);
 Vue.use(
   new VueSocketIO({
     debug: true,
-    connection: socketio("ws://localhost:3000/multiplayer")
+    connection: socketio("http://localhost:3000/multiplayer")
   })
 );
 

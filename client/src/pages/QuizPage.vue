@@ -26,7 +26,7 @@
             v-show="!submitted"
             @click="next(quizData[current].gistId, quizData[current].filename)"
           >
-            {{ current !== 1 ? "Next" : "Submit" }}
+            {{ current !== 14 ? "Next" : "Submit" }}
             <i class="fas fa-arrow-right"></i>
           </button>
         </div>
@@ -80,7 +80,7 @@ export default {
     return {
       quizData: [],
       current: 0,
-      answer: Array(2),
+      answer: Array(15),
       showModal: false,
       score: 0,
       message: "",
@@ -100,7 +100,7 @@ export default {
   },
   methods: {
     fetchData() {
-      this.$http._get("/quiz").then(res => {
+      this.$http._get("/quiz?id=" + this.userId.id).then(res => {
         if (!res.data) {
           this.$http._post("/quiz").then(res => {
             this.quizData = res.data;
@@ -111,7 +111,7 @@ export default {
       });
     },
     next(gistId, filename) {
-      if (this.current !== 1) {
+      if (this.current !== 14) {
         this.answered = false;
         this.answer[this.current] = {
           gistId: gistId,

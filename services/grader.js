@@ -1,6 +1,7 @@
 const Score = require('../models/Score');
 const Question = require('../models/Question');
 const { randomLang } = require('../utils/randomLang');
+const redis = require("./redis");
 
 module.exports = {
   grade: [
@@ -10,19 +11,31 @@ module.exports = {
       const timeTakenInSec = req.body.timeTaken
       let point = 0;
 
-      for (const answer of answers) {
-        await Question.findOne({gistId: answer.gistId, filename: answer.filename})
-          .exec()
-          .then(value => {
-            if ((value.language === answer.language) && !randomLang.includes(answer.language)) {
-              point += value.score;
-            }
-          }).catch(err => {
-            return res.json({
-              error: true,
-              message: err.message
+      let cachedQ = await redis.get("quiz:"+userId);
+      if (cachedQ) {
+        cachedQ = JSON.parse(cachedQ);
+        let i = 0;
+        for (const answer of answers) {
+          if (answer.language === cachedQ[i].language) {
+            point += cachedQ[i].score;
+          }
+          i++;
+        }
+      } else {
+        for (const answer of answers) {
+          await Question.findOne({gistId: answer.gistId, filename: answer.filename})
+            .exec()
+            .then(value => {
+              if ((value.language === answer.language) && !randomLang.includes(answer.language)) {
+                point += value.score;
+              }
+            }).catch(err => {
+              return res.json({
+                error: true,
+                message: err.message
+              });
             });
-          });
+        }
       }
 
       if (timeTakenInSec > 100) {

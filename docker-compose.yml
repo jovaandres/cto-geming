@@ -1,7 +1,7 @@
 version: '3.1'
 services:
   nginx:
-    image: nginx:1.19
+    image: nginx
     container_name: nginx
     depends_on:
       - webapp
@@ -32,7 +32,7 @@ services:
       - 3000:3000
 
   mongo:
-    container_name: mongobackend
+    container_name: mongo
     image: mongo
     networks:
       - my-network
@@ -42,6 +42,18 @@ services:
         - "27017:27017"
     volumes:
         - mydb:/data/db
+  
+  redis:
+    container_name: redis
+    image: redis
+    networks:
+      - my-network
+    expose:
+      - "6379"
+    ports:
+      - "6379:6379"
+    volumes:
+      - mydb:/data/redis
 
 volumes:
   mydb:

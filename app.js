@@ -11,7 +11,7 @@ const history = require('connect-history-api-fallback');
 const app = express()
 
 app.use(cors({
-  origin: "http://localhost:8080",
+  origin: process.env.ORIGIN,
   method: ['GET', 'POST', 'PUT'],
   credentials: true
 }));

@@ -22,11 +22,11 @@ app.set('port', port);
 var server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:8080",
+    origin: process.env.ORIGIN,
     credentials: true
   }
 });
-
+require("../services/redis");
 const SocketIO = require("../services/socket");
 const socks = new SocketIO(io);
 require("../services/multiplayer");
