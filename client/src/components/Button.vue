@@ -1,6 +1,6 @@
 <template>
-  <button type="submit" class='ans-btn'>
-    {{choice}}
+  <button type="submit" class="ans-btn">
+    {{ choice }}
   </button>
 </template>
 
@@ -10,18 +10,18 @@ export default {
   props: {
     choice: String
   }
-}
+};
 </script>
 
 <style scoped>
 .ans-btn {
-  border: 1px solid #00ADB5;
+  border: 1px solid #00adb5;
   padding: 15px;
   width: 6.5em;
   border-radius: 10px;
-  transition: .15s ease-in;
+  transition: 0.15s ease-in;
 }
 .ans-btn:hover {
-  background-color: #00ADB535;
+  background-color: #00adb535;
 }
 </style>

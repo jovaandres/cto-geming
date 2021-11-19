@@ -1,12 +1,14 @@
-const SocketIO = require("../services/socket");
-const socks = new SocketIO();
-const Room = require("../models/Room");
-const Player = require("../models/Players");
-const Question = require("../models/Question");
+import SocketIO from "./socket";
+import {Socket} from "socket.io";
+
+const socks = SocketIO();
+import Room from "../models/Room";
+import Player from "../models/Players";
+import Question from "../models/Question";
 
 const iom = socks.getNamespace("multiplayer");
 
-const createCode = async () => {
+const createCode: any = async () => {
   let random = Math.ceil(Math.random() * 899999) + 100000;
   let exists = await Room.count({roomId: random});
   if (exists) {
@@ -16,8 +18,7 @@ const createCode = async () => {
   }
 }
 
-iom.on("connection", async (socket) => {
-
+iom.on("connection", async (socket: Socket) => {
   socket.on("create", async (host, callback) => {
     let roomId = await createCode();
     let room = new Room({
@@ -45,7 +46,7 @@ iom.on("connection", async (socket) => {
 
   socket.on("join", async (data, callback) => {
     let filter = {roomId: data.gameCode}
-    let room = await Room.findOne(filter)
+    let room: any = await Room.findOne(filter)
     if (room && !room.isStart) {
       let newPlayer = new Player({
         name: data.name,
@@ -89,7 +90,7 @@ iom.on("connection", async (socket) => {
   });
 
   socket.on("play", async (roomId, callback) => {
-    let room = await Room.findOne({roomId: roomId});
+    let room: any = await Room.findOne({roomId: roomId});
     let questions = room.questions;
     if (questions) {
       callback({
@@ -105,11 +106,11 @@ iom.on("connection", async (socket) => {
   });
 
   socket.on("submit", async (data) => {
-    let question = await Question.findOne({gistId: data.gistId});
+    let question: any = await Question.findOne({gistId: data.gistId});
     let roomId = data.roomId;
     let timeTaken = data.timeTaken.toFixed(2);
     if (question.language === data.answer) {
-      let player = await Player.findOne({socketId: socket.id});
+      let player: any = await Player.findOne({socketId: socket.id});
       await Player.findOneAndUpdate({socketId: socket.id},
         {score: question.score + player.score, timeTaken: timeTaken});
       let allPlayers = await Player.find({roomId: roomId}).sort({

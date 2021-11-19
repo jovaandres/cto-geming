@@ -1,4 +1,4 @@
-const randomLang = [
+export const randomLang = [
   "Pony",
   "Nim",
   "Elixir",
@@ -13,7 +13,7 @@ const randomLang = [
   "Cybil"
 ];
 
-const programmingLanguage = [
+export const programmingLanguage = [
   "Assembly",
   "Bash",
   "C",
@@ -43,8 +43,3 @@ const programmingLanguage = [
   "Swift",
   "Text"
 ];
-
-module.exports = {
-  randomLang,
-  programmingLanguage
-};

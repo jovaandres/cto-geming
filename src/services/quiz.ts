@@ -1,20 +1,24 @@
-const Question = require('../models/Question');
-const axios = require('axios');
-const {randomLang, programmingLanguage} = require('../utils/randomLang');
-const redis = require("./redis");
+import Question from "../models/Question";
+import axios from "axios"
+import {randomLang, programmingLanguage} from "../utils/randomLang";
+import redis from "./redis";
+import {Request, Response} from "express";
+import {AnyObject} from "mongoose";
 
-function splitDoc(docs, opt="", spl){
+function splitDoc(docs: any, opt = "", spl: number) {
   const field = opt.split(' ');
   const fieldEx = field.splice(spl);
-  let include = [];
-  let exclude = [];
-  docs.forEach(doc => {
-    let resIn = { };
-    let resEx = { };
+  let include: {}[] = [];
+  let exclude: {}[] = [];
+  docs.forEach((doc: { [x: string]: any; }) => {
+    let resIn = {};
+    let resEx = {};
     field.forEach(el => {
+      // @ts-ignore
       resIn[el] = doc[el];
     });
     fieldEx.forEach(el => {
+      // @ts-ignore
       resEx[el] = doc[el];
     })
     include.push(resIn);
@@ -26,9 +30,9 @@ function splitDoc(docs, opt="", spl){
   };
 }
 
-module.exports = {
+export = {
   getQuiz: [
-    function (req, res, next) {
+    function (req: Request, res: Response) {
 
       const questionLimit = req.query.limit || 15;
       let userId = req.query.id;
@@ -42,7 +46,7 @@ module.exports = {
         } else {
           if (results) {
             let data = splitDoc(results, "gistId filename score choice language score", 4);
-            redis.set("quiz:"+userId, JSON.stringify(data.exclude), 'EX', 60 * 60 * 12);
+            redis.set("quiz:" + userId, JSON.stringify(data.exclude), 'EX', 60 * 60 * 12);
             return res.json({
               error: false,
               data: data.include
@@ -58,14 +62,15 @@ module.exports = {
     }
   ],
   postQuiz: [
-    function (req, res, next) {
+    function (req: Request, res: Response) {
       Question.deleteMany({score: {$gte: 0}})
         .catch(err => console.log(err.message));
-      let insertData = [];
+      let insertData: AnyObject = [];
 
       axios.get("https://api.github.com/gists/public?per_page=100")
-        .then(datas => {
-          datas.data.forEach(data => {
+        .then((datas: any) => {
+          datas.data.forEach((data: any) => {
+            // @ts-ignore
             let language = Object.values(data.files)[0].language || randomLang[Math.floor(Math.random() * (12))];
             let choice = [];
 
@@ -97,7 +102,7 @@ module.exports = {
               });
             });
 
-        }).catch(err => {
+        }).catch((err: any) => {
         return res.json({
           error: true,
           message: err.message

@@ -6,7 +6,7 @@ import SignInPage from "@/pages/SignInPage";
 import QuizPage from "@/pages/QuizPage";
 import QuizGame from "@/pages/QuizGame";
 import NotFound from "@/pages/NotFound";
-import LeaderboardPage from "@/pages/LeaderboardPage"
+import LeaderboardPage from "@/pages/LeaderboardPage";
 import store from "@/vuex";
 import WaitingPage from "@/pages/WaitingPage";
 

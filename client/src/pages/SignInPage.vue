@@ -30,14 +30,9 @@
             v-model="userData.password"
           />
 
-          <button
-            type="submit"
-            class="button w-full"
-            @click="onSubmit"
-          >
+          <button type="submit" class="button w-full" @click="onSubmit">
             Sign In
           </button>
-
         </div>
 
         <div class="link-sign-up mt-2">
@@ -52,12 +47,12 @@
 </template>
 <script>
 import { mapActions } from "vuex";
-import particle3 from '../components/particle3.vue';
+import particle3 from "../components/particle3.vue";
 
 export default {
   components: { particle3 },
   name: "SignInPage",
-  props: ['userAuth'],
+  props: ["userAuth"],
   data() {
     return {
       userData: {
@@ -77,7 +72,7 @@ export default {
           return this.$router.push({ name: redirectRouteName, query: this.$route.query });
         }
       },
-      immediate: true,
+      immediate: true
     }
   },
   methods: {
@@ -104,114 +99,114 @@ export default {
 </script>
 
 <style scoped>
-  .sign-in-page {
-    background-color: #222831;
-    height: 100vh;
-    width: 100vw;
-    color: #EEEEEE;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    padding: 8em 5em;
-  }
+.sign-in-page {
+  background-color: #222831;
+  height: 100vh;
+  width: 100vw;
+  color: #eeeeee;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  padding: 8em 5em;
+}
 
-  .sign-in-container {
-    padding: 10px 4em;
-    z-index: 2;
-    background-color: #393e4640;
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-    border-radius: 50px;
-    box-shadow: 5px 5px 40px #00adb550;
-    position: relative;
-    display: flex;
-    height: 100%;
-    align-items: center;
-  }
+.sign-in-container {
+  padding: 10px 4em;
+  z-index: 2;
+  background-color: #393e4640;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border-radius: 50px;
+  box-shadow: 5px 5px 40px #00adb550;
+  position: relative;
+  display: flex;
+  height: 100%;
+  align-items: center;
+}
 
-  .sign-in-box {
-    display: flex;
-    flex-direction: column;
-  }
+.sign-in-box {
+  display: flex;
+  flex-direction: column;
+}
 
-  .sign-in-title {
-    font-size: 28px;
-    text-align: center;
-  }
+.sign-in-title {
+  font-size: 28px;
+  text-align: center;
+}
 
-  .sign-in-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
+.sign-in-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
 
-  .sign-in-form input {
-    background-color: #393e46;
-    padding: 9px;
-    outline: none;
-    width: 20em;
-  }
+.sign-in-form input {
+  background-color: #393e46;
+  padding: 9px;
+  outline: none;
+  width: 20em;
+}
 
-  .sign-in-form input:-webkit-autofill,
-  .sign-in-form input:-webkit-autofill:hover,
-  .sign-in-form input:-webkit-autofill:focus,
-  .sign-in-form input:-webkit-autofill:active {
-    -webkit-transition: "color 9999s ease-out, background-color 9999s ease-out";
-    -webkit-transition-delay: 9999s;
-    transition: color 9999s ease-out, background-color 9999s ease-out;
-    transition-delay: 9999s;
-  }
+.sign-in-form input:-webkit-autofill,
+.sign-in-form input:-webkit-autofill:hover,
+.sign-in-form input:-webkit-autofill:focus,
+.sign-in-form input:-webkit-autofill:active {
+  -webkit-transition: "color 9999s ease-out, background-color 9999s ease-out";
+  -webkit-transition-delay: 9999s;
+  transition: color 9999s ease-out, background-color 9999s ease-out;
+  transition-delay: 9999s;
+}
 
-  .sign-in-form button {
-    background-color: #00adb590;
-    padding: 8px;
-    outline: none;
-  }
+.sign-in-form button {
+  background-color: #00adb590;
+  padding: 8px;
+  outline: none;
+}
 
-  .sign-in-form button:hover {
-    background-color: #00adb550;
-  }
+.sign-in-form button:hover {
+  background-color: #00adb550;
+}
 
-  .link-sign-up {
-    text-align: center;
-  }
+.link-sign-up {
+  text-align: center;
+}
 
-  .modal {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    margin: auto;
-    text-align: center;
-    width: 50vw;
-    height: fit-content;
-    max-width: 22em;
-    padding: 2rem;
-    border-radius: 1rem;
-    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);
-    background: #FFF;
-    z-index: 999;
-    transform: none;
-  }
+.modal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  text-align: center;
+  width: 50vw;
+  height: fit-content;
+  max-width: 22em;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);
+  background: #fff;
+  z-index: 999;
+  transform: none;
+}
 
-  .modal h3 {
-    color: #2c3e50;
-  }
+.modal h3 {
+  color: #2c3e50;
+}
 
-  .modal p {
-    color: #2c3e50;
-  }
+.modal p {
+  color: #2c3e50;
+}
 
-  .modal-overlay {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 998;
-    background: #2c3e50;
-    opacity: 0.6;
-    cursor: pointer;
-  }
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 998;
+  background: #2c3e50;
+  opacity: 0.6;
+  cursor: pointer;
+}
 </style>

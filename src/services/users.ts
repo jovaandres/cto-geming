@@ -1,10 +1,11 @@
-const User = require('../models/User');
-const isBodyMissingProps = require('../utils/isBodyMissingProps');
-const { userPassport } = require('../config/passport');
+import {NextFunction, Request, Response} from "express";
+import User from "../models/User";
+import {isBodyMissingProps} from "../utils/isBodyMissingProps";
+import userPassport from "../config/passport";
 
-module.exports = {
+export = {
   create: [
-    function(req, res, next) {
+    function (req: Request, res: Response, next: NextFunction) {
       const requiredProps = [
         ['email', 'Your email is required', true],
         ['firstName', 'Your first name is required.', true],
@@ -12,7 +13,7 @@ module.exports = {
         ['lastName', 'Your last name is required', true]
       ];
 
-      const { hasMissingProps, propErrors } = isBodyMissingProps(
+      const {hasMissingProps, propErrors} = isBodyMissingProps(
         requiredProps,
         req.body
       );
@@ -31,21 +32,21 @@ module.exports = {
         password,
       } = req.body;
 
-      return User.count({ email })
+      return User.count({email})
         .exec()
-        .then(function(count) {
+        .then(function (count) {
           if (count > 0) {
             throw {
               name: "ValidationError",
               errors: {
-                email: { message: "The email is already taken" }
+                email: {message: "The email is already taken"}
               }
             };
           }
           return count;
         })
         .then(() => {
-          const user = new User({
+          const user: any = new User({
             email,
             firstName,
             lastName,
@@ -54,8 +55,8 @@ module.exports = {
           user.setPassword(password);
           return user
             .save()
-            .then(function(user) {
-              return res.json({ success: true, user: user.authSerialize() });
+            .then(function (user: any) {
+              return res.json({success: true, user: user.authSerialize()});
             })
         })
         .catch(next);
@@ -63,12 +64,12 @@ module.exports = {
   ],
 
   login: [
-    (req, res, next) => {
+    (req: Request, res: Response, next: NextFunction) => {
       const requiredProps = [
         ['email', 'Your email and password are required to sign in.', true],
         ['password', 'Your email and password are required to sign.', true],
       ];
-      const { hasMissingProps, propErrors } = isBodyMissingProps(requiredProps, req.body);
+      const {hasMissingProps, propErrors} = isBodyMissingProps(requiredProps, req.body);
       if (hasMissingProps) {
         return next({
           name: "ValidationError",
@@ -77,15 +78,15 @@ module.exports = {
       }
       return next()
     },
-    (req, res, next) => userPassport.authenticate("local", function(err, user, data) {
+    (req: Request, res: Response, next: NextFunction) => userPassport.authenticate("local", function (err, user, data) {
       if (err) {
         return next(err);
       }
       if (!user) {
-        return next({ ...data, success: false });
+        return next({...data, success: false});
       }
 
-      return res.json({ success: true, user: user.authSerialize() });
+      return res.json({success: true, user: user.authSerialize()});
     })(req, res, next),
   ]
 };

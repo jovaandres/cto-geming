@@ -319,7 +319,7 @@ export default {
 }
 
 .selected {
-  background-color: #00ADB5;
+  background-color: #00adb5;
 }
 
 .modal {
@@ -336,7 +336,7 @@ export default {
   padding: 2rem;
   border-radius: 1rem;
   box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);
-  background: #FFF;
+  background: #fff;
   z-index: 999;
   transform: none;
 }
@@ -378,6 +378,6 @@ export default {
   border-radius: 10px;
   font-size: 20px;
   margin: 1em 0.5em;
-  color: #FFF;
+  color: #fff;
 }
 </style>

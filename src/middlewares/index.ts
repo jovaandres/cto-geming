@@ -1,7 +1,9 @@
-const jwt = require('express-jwt');
-const User = require('../models/User');
+import {NextFunction, Request, Response} from "express";
+import User from "../models/User";
+import "express-jwt"
+import jwt from "express-jwt";
 
-function getToken(req) {
+function getToken(req: Request) {
   if (
     (req.headers.authorization &&
       req.headers.authorization.split(" ")[0] === "Token") ||
@@ -14,14 +16,14 @@ function getToken(req) {
 }
 
 const required = jwt({
-  secret: process.env.APP_SECRET,
+  secret: process.env.APP_SECRET || "secret",
   userProperty: "auth",
   getToken: getToken,
   algorithms: ['HS256'],
 });
 
 const optional = jwt({
-  secret: process.env.APP_SECRET,
+  secret: process.env.APP_SECRET || "secret",
   userProperty: "auth",
   algorithms: ['HS256'],
   credentialsRequired: false,
@@ -31,8 +33,8 @@ const optional = jwt({
 const auth = {
   required,
   optional,
-  requireAuthUser: [required, function(req, res, next) {
-    const { auth } = req;
+  requireAuthUser: [required, function (req: any, res: Response, next: NextFunction) {
+    const {auth} = req;
     if (auth.sub !== 'user') {
       return next({
         name: "UnauthorizedError",
@@ -40,9 +42,12 @@ const auth = {
       });
     }
     return User.findById(auth.id)
-      .then(function(user) {
+      .then(function (user: any) {
         if (!user) {
-          return next({ name: "UnauthorizedError", message: "The password or email may be incorrect." });
+          return next({
+            name: "UnauthorizedError",
+            message: "The password or email may be incorrect."
+          });
         }
         req.authUser = user;
         return next();
@@ -51,4 +56,4 @@ const auth = {
   }],
 };
 
-module.exports = auth;
+export = auth;

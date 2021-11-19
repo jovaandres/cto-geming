@@ -63,19 +63,18 @@
           </button>
         </router-link>
         <button @click="joinGame" class="btn-link create-btn">Join</button>
-    </div>
+      </div>
     </div>
     <div class="right">
       <div class="img-holder">
-        <img src="@/images/homepage/code1.jpg" alt="Code" class="code1">
-        <img src="@/images/homepage/code2.jpg" alt="Code" class="code2">
-      <div class="img-blur"></div>
+        <img src="@/images/homepage/code1.jpg" alt="Code" class="code1" />
+        <img src="@/images/homepage/code2.jpg" alt="Code" class="code2" />
+        <div class="img-blur"></div>
       </div>
     </div>
   </div>
 </template>
 <script>
-
 import particle2 from "@/components/particle2";
 import { mapActions } from "vuex";
 export default {
@@ -121,191 +120,191 @@ export default {
 };
 </script>
 <style scoped>
-  .home-page {
-    background-color: #222831;
-    height: 100vh;
-    width: 100vw;
-    color: #EEEEEE;
-    overflow: hidden;
-    display: flex;
-  }
-  .left {
-    width: 65%;
-    display: flex;
-    height: 100vh;
-    justify-content: center;
-    padding-inline: 5em;
-    flex-direction: column;
-    /* border: 1px solid white; */
-  }
-  .title {
-    z-index: 2;
-  }
-  .right {
-    background-color: #00ADB5;
-    width: 45%;
-    position: relative;
-    /* border: 1px solid white; */
-  }
-  h1 {
-    font-family: "Bowlby One SC";
-    font-size: 4em;
-  }
-  h1 span {
-    transition: 0.15s ease-out;
-    cursor: default;
-  }
-  h1 span:hover {
-    color: #00ADB5;
-  }
-  .btn-container {
-    display: flex;
-    gap: 20px;
-    z-index: 2;
-  }
-  .btn-link {
-    outline: none;
-    padding: 10px;
-    width: 10em;
-    border-radius: 30px;
-    font-size: 16px;
-    transition: 0.15s ease-in-out;
-  }
-  .sign-in {
-    background-color: #00ADB585;
-  }
-  .sign-in:hover {
-    /* background-color: #14898f; */
-    box-shadow: 2px 2px 12px 1px #393E46;
-  }
-  .sign-up {
-    border: 1px solid #00ADB585;
-  }
-  .sign-up:hover {
-    box-shadow: 2px 2px 12px 1px #393E46;
-  }
-  .wave {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    transform: rotate(-90deg);
-  }
-  .img-blur {
-    height: 100vh;
-    background: rgba( 34, 40, 49, 0.3 );
-    box-shadow: 0 -8px 32px 0 rgba( 31, 38, 135, 0.37 );
-    backdrop-filter: blur( 1.5px );
-    -webkit-backdrop-filter: blur( 1.5px );
-  }
-  .img-holder {
-    overflow: hidden;
-    position: relative;
-    height: 100%;
-    width: 100%;
-  }
-  .code1 {
-    width: 35em;
-    position: absolute;
-    right: -10%;
-    top: -8%;
-    transform: rotate(-12deg);
-  }
-  .code2 {
-    width: 32em;
-    position: absolute;
-    bottom: -8%;
-    left: -7%;
-    transform: rotate(-8deg);
-  }
+.home-page {
+  background-color: #222831;
+  height: 100vh;
+  width: 100vw;
+  color: #eeeeee;
+  overflow: hidden;
+  display: flex;
+}
+.left {
+  width: 65%;
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  padding-inline: 5em;
+  flex-direction: column;
+  /* border: 1px solid white; */
+}
+.title {
+  z-index: 2;
+}
+.right {
+  background-color: #00adb5;
+  width: 45%;
+  position: relative;
+  /* border: 1px solid white; */
+}
+h1 {
+  font-family: "Bowlby One SC";
+  font-size: 4em;
+}
+h1 span {
+  transition: 0.15s ease-out;
+  cursor: default;
+}
+h1 span:hover {
+  color: #00adb5;
+}
+.btn-container {
+  display: flex;
+  gap: 20px;
+  z-index: 2;
+}
+.btn-link {
+  outline: none;
+  padding: 10px;
+  width: 10em;
+  border-radius: 30px;
+  font-size: 16px;
+  transition: 0.15s ease-in-out;
+}
+.sign-in {
+  background-color: #00adb585;
+}
+.sign-in:hover {
+  /* background-color: #14898f; */
+  box-shadow: 2px 2px 12px 1px #393e46;
+}
+.sign-up {
+  border: 1px solid #00adb585;
+}
+.sign-up:hover {
+  box-shadow: 2px 2px 12px 1px #393e46;
+}
+.wave {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  transform: rotate(-90deg);
+}
+.img-blur {
+  height: 100vh;
+  background: rgba(34, 40, 49, 0.3);
+  box-shadow: 0 -8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+.img-holder {
+  overflow: hidden;
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+.code1 {
+  width: 35em;
+  position: absolute;
+  right: -10%;
+  top: -8%;
+  transform: rotate(-12deg);
+}
+.code2 {
+  width: 32em;
+  position: absolute;
+  bottom: -8%;
+  left: -7%;
+  transform: rotate(-8deg);
+}
 
-  .text-field {
-    color: #222831;
-  }
+.text-field {
+  color: #222831;
+}
 
-  .btn-join {
-    color: #222831;
-  }
+.btn-join {
+  color: #222831;
+}
 
-  .modal {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    margin: auto;
-    text-align: center;
-    width: 50vw;
-    height: fit-content;
-    max-width: 22em;
-    padding: 2rem;
-    border-radius: 1rem;
-    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);
-    background: #FFF;
-    z-index: 999;
-    transform: none;
-    display: flex;
-    flex-direction: column;
-    padding-inline: 3rem;
-    gap: 13px;
-  }
+.modal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  text-align: center;
+  width: 50vw;
+  height: fit-content;
+  max-width: 22em;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);
+  background: #fff;
+  z-index: 999;
+  transform: none;
+  display: flex;
+  flex-direction: column;
+  padding-inline: 3rem;
+  gap: 13px;
+}
 
-  .modal .btn-join {
-    background: #222831;
-    width: 38%;
-    margin-inline: auto;
-    padding: 5px;
-    border-radius: 10px;
-    color: #EEEEEE;
-    font-size: 20px;
-    transition: .3s;
-    margin-top: 5px;
-  }
+.modal .btn-join {
+  background: #222831;
+  width: 38%;
+  margin-inline: auto;
+  padding: 5px;
+  border-radius: 10px;
+  color: #eeeeee;
+  font-size: 20px;
+  transition: 0.3s;
+  margin-top: 5px;
+}
 
-  .modal .btn-join:hover {
-    background: #22283140;
-    font-weight: 700;
-    color: #222831;
-  }
+.modal .btn-join:hover {
+  background: #22283140;
+  font-weight: 700;
+  color: #222831;
+}
 
-  .modal input {
-    border: 1px solid #2c3e50;
-    padding: 10px;
-  }
+.modal input {
+  border: 1px solid #2c3e50;
+  padding: 10px;
+}
 
-  .modal input::placeholder {
-    color: #222831;
-  }
+.modal input::placeholder {
+  color: #222831;
+}
 
-  .modal input:focus {
-    outline-offset: .25rem;
-  }
+.modal input:focus {
+  outline-offset: 0.25rem;
+}
 
-  .modal h3 {
-    color: #2c3e50;
-    font-weight: 700;
-    font-size: 32px;
-  }
+.modal h3 {
+  color: #2c3e50;
+  font-weight: 700;
+  font-size: 32px;
+}
 
-  .modal p {
-    color: #2c3e50;
-  }
+.modal p {
+  color: #2c3e50;
+}
 
-  .modal-overlay {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 998;
-    background: #2c3e50;
-    opacity: 0.6;
-    cursor: pointer;
-  }
-  .create-btn {
-    border: 1px solid #EEEEEE;
-  }
-  .create-btn:hover {
-    box-shadow: 2px 2px 8px 1px #00ADB560;
-  }
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 998;
+  background: #2c3e50;
+  opacity: 0.6;
+  cursor: pointer;
+}
+.create-btn {
+  border: 1px solid #eeeeee;
+}
+.create-btn:hover {
+  box-shadow: 2px 2px 8px 1px #00adb560;
+}
 </style>

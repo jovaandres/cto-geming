@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
-const crypto = require("crypto");
-const uniqueValidator = require("mongoose-unique-validator");
-const jwt = require("jsonwebtoken");
+import * as mongoose from "mongoose"
+import crypto from "crypto";
+import uniqueValidator from "mongoose-unique-validator"
+import jwt from "jsonwebtoken"
 
 const UserSchema = new mongoose.Schema(
   {
@@ -27,28 +27,28 @@ const UserSchema = new mongoose.Schema(
     },
     salt: String,
     hash: String,
-    suspended: { type: Boolean, default: false }
+    suspended: {type: Boolean, default: false}
   },
-  { timestamps: true }
+  {timestamps: true}
 );
 
-UserSchema.plugin(uniqueValidator, { type: "mongoose-unique-validator" });
+UserSchema.plugin(uniqueValidator, {type: "mongoose-unique-validator"});
 
-UserSchema.methods.setPassword = function(password) {
+UserSchema.methods.setPassword = function (password) {
   this.salt = crypto.randomBytes(16).toString("hex");
   this.hash = crypto
     .pbkdf2Sync(password, this.salt, 10000, 512, "sha512")
     .toString("hex");
 };
 
-UserSchema.methods.validPassword = function(password) {
+UserSchema.methods.validPassword = function (password) {
   const hash = crypto
     .pbkdf2Sync(password, this.salt, 10000, 512, "sha512")
     .toString("hex");
   return this.hash === hash;
 };
 
-UserSchema.methods.generateJWT = function() {
+UserSchema.methods.generateJWT = function () {
   const today = new Date();
   let exp = new Date(today);
   exp.setDate(today.getDate() + 30);
@@ -57,13 +57,13 @@ UserSchema.methods.generateJWT = function() {
     {
       sub: "user",
       id: this._id,
-      exp: parseInt(exp.getTime() / 1000)
+      exp: parseInt(String(exp.getTime() / 1000))
     },
-    process.env.APP_SECRET
+    process.env.APP_SECRET || "secret"
   );
 };
 
-UserSchema.methods.authSerialize = function(accessToken = true) {
+UserSchema.methods.authSerialize = function (accessToken = true) {
   return {
     id: this.id,
     email: this.email,
@@ -81,4 +81,4 @@ UserSchema.methods.authSerialize = function(accessToken = true) {
 
 const User = mongoose.model("User", UserSchema);
 
-module.exports = User;
+export = User;

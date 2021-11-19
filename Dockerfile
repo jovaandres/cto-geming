@@ -1,6 +1,7 @@
 FROM node:alpine
 
 RUN mkdir -p /app/client
+RUN mkdir -p /app/src
 
 WORKDIR /app/client
 COPY client/package*.json  \
@@ -12,16 +13,21 @@ RUN npm install
 RUN npm run build
 
 WORKDIR /app
-COPY package*.json app.js ./
+COPY package.json tsconfig.json ./
 RUN npm install
 
-COPY bin ./bin
-COPY config ./config
-COPY middlewares ./middlewares
-COPY models ./models
-COPY routes ./routes
-COPY services ./services
-COPY utils ./utils
+WORKDIR /app/src
+COPY src/app.ts ./
+COPY src/bin ./bin
+COPY src/config ./config
+COPY src/middlewares ./middlewares
+COPY src/models ./models
+COPY src/routes ./routes
+COPY src/services ./services
+COPY src/utils ./utils
+
+WORKDIR /app
+RUN npm run build
 
 EXPOSE 3000
 CMD [ "npm", "run", "start" ]

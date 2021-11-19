@@ -3,23 +3,23 @@
 /**
  * Module dependencies.
  */
-require("dotenv").config();
-var app = require("../app");
-var debug = require('debug')('cto-app:server');
-var http = require('http');
-var mongoose = require('mongoose');
-const { Server } = require("socket.io");
+import app from "../app"
+import debug from "debug";
+import * as http from "http"
+import MongoClient from "mongoose";
+import {Server} from "socket.io";
+
+debug("cto-app:server")
 /**
  * Get port from environment and store in Express.
  */
-
-var port = normalizePort(process.env.PORT || '3000');
+const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 /**
  * Create https server.
  */
-var server = http.createServer(app);
+const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: process.env.ORIGIN,
@@ -27,34 +27,32 @@ const io = new Server(server, {
   }
 });
 require("../services/redis");
-const SocketIO = require("../services/socket");
+import SocketIO from "../services/socket";
+// @ts-ignore
 const socks = new SocketIO(io);
 require("../services/multiplayer");
 
 /**
  * Listen on provided port, on all network interfaces.
  */
+MongoClient.connect(process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/")
+  .then(() => {
+    console.log("MongoDB Connected");
+  })
+  .catch((err: any) => {
+    console.log(err.message);
+  })
 
-mongoose.connect(process.env.MONGODB_URI);
-const db = mongoose.connection;
-
-db.once('open', () => {
-  console.log("MongoDB Connected");
-  server.listen(port);
-  server.on('error', onError);
-  server.on('listening', onListening);
-});
-
-db.on('error', (err) => {
-  console.log(err.message);
-});
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
 
 /**
  * Normalize a port into a number, string, or false.
  */
 
-function normalizePort(val) {
-  var port = parseInt(val, 10);
+function normalizePort(val: string) {
+  const port = parseInt(val, 10);
 
   if (isNaN(port)) {
     // named pipe
@@ -73,12 +71,12 @@ function normalizePort(val) {
  * Event listener for https server "error" event.
  */
 
-function onError(error) {
+function onError(error: { syscall: string; code: any; }) {
   if (error.syscall !== 'listen') {
     throw error;
   }
 
-  var bind = typeof port === 'string'
+  const bind = typeof port === 'string'
     ? 'Pipe ' + port
     : 'Port ' + port;
 
@@ -102,10 +100,10 @@ function onError(error) {
  */
 
 function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === 'string'
+  const addr = server.address();
+  const bind = typeof addr === 'string'
     ? 'pipe ' + addr
-    : 'port ' + addr.port;
+    : 'port ' + addr?.port;
   debug('Listening on ' + bind);
   console.log(`Listening on port ${port}`);
 }

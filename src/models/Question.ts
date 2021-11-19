@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
-const uniqueValidator = require("mongoose-unique-validator");
-const random = require('mongoose-simple-random');
+import * as mongoose from "mongoose";
+import uniqueValidator from "mongoose-unique-validator";
+import random from "mongoose-simple-random";
 
 const QuestionSchema = new mongoose.Schema(
   {
@@ -32,4 +32,4 @@ QuestionSchema.plugin(uniqueValidator, {type: "mongoose-unique-validator"});
 
 const Question = mongoose.model("Question", QuestionSchema);
 
-module.exports = Question;
+export = Question;

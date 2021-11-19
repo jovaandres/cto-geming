@@ -21,7 +21,7 @@ services:
     depends_on:
       - mongo
     environment:
-      - WEB_APP=app.js
+      - WEB_APP=app.ts
     env_file: .env
     command: npm run start
     networks:

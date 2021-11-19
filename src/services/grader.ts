@@ -1,17 +1,18 @@
-const Score = require('../models/Score');
-const Question = require('../models/Question');
-const { randomLang } = require('../utils/randomLang');
-const redis = require("./redis");
+import Score from "../models/Score";
+import {Request, Response} from "express";
+import Question from "../models/Question";
+import {randomLang} from "../utils/randomLang";
+import redis from "./redis";
 
-module.exports = {
+export = {
   grade: [
-    async function (req, res, next) {
+    async function (req: Request, res: Response) {
       const answers = req.body.data;
       const userId = req.body.userId;
       const timeTakenInSec = req.body.timeTaken
       let point = 0;
 
-      let cachedQ = await redis.get("quiz:"+userId);
+      let cachedQ: any = await redis.get("quiz:" + userId);
       if (cachedQ) {
         cachedQ = JSON.parse(cachedQ);
         let i = 0;
@@ -25,11 +26,11 @@ module.exports = {
         for (const answer of answers) {
           await Question.findOne({gistId: answer.gistId, filename: answer.filename})
             .exec()
-            .then(value => {
+            .then((value: any) => {
               if ((value.language === answer.language) && !randomLang.includes(answer.language)) {
                 point += value.score;
               }
-            }).catch(err => {
+            }).catch((err: any) => {
               return res.json({
                 error: true,
                 message: err.message
@@ -50,12 +51,12 @@ module.exports = {
 
       let msg = (timeTakenInSec > 100) ? "Cupu gan" : "Gegegemink"
 
-      newScore.save().then(value => {
+      newScore.save().then((value: any) => {
         return res.json({
           score: value.score,
           message: msg
         })
-      }).catch(err => {
+      }).catch((err: any) => {
         console.log(err.message);
       });
     }
